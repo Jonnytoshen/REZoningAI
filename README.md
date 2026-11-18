@@ -36,6 +36,14 @@ pnpm start
 
 `pnpm test` 通过 Nx 运行一次 Vitest。测试使用本机模拟的 Chat Completions 接口和临时 SQLite 数据库，覆盖流式工具调用、多轮上下文、中断重试和会话恢复。真实模型的验收使用上面的百炼配置。
 
+## Git 提交规范
+
+安装依赖时会自动启用提交消息校验。提交标题用 `type: subject` 或 `type(scope): subject`。scope 可选，可用 `api`、`web` 或 `chat` 标明改动范围。标题可用中文或英文，例如 `docs: 更新启动说明`、`fix(api): handle empty input`。
+
+Commitlint 会在提交时提示规则违规。错误会阻止提交，警告允许提交。Git 自动生成的合并、回退及 `fixup!` 等消息按预设规则豁免。[Conventional Commits 规范](https://www.conventionalcommits.org/zh-hans/v1.0.0/)
+
+如需重新启用钩子，在仓库根目录运行 `pnpm run prepare`。检查一组已有提交时，将 `BASE` 换成起点提交的 SHA 或分支名，运行 `pnpm run lint:commits --from BASE --to HEAD`。检查范围包含 `HEAD`，排除 `BASE` 及其祖先。
+
 ## 选址业务
 
 Agent 基础版可以协助梳理搜索范围、项目类型、资料和待核实事项。地图工作台与候选区筛选随空间工具接入，工程概算和财务原型也按业务需要逐步作为工具接入。[选址方案](docs/early-stage-siting-agent.md) · [Agent 基础版规格](.scratch/agent-foundation/spec.md)

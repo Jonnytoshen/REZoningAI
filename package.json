@@ -13,13 +13,18 @@
     "dev:web": "nx dev web",
     "build": "nx run-many -t build -p api web",
     "start": "node --env-file-if-exists=.env apps/api/dist/main.js",
-    "test": "nx test api"
+    "test": "nx test api",
+    "prepare": "husky",
+    "lint:commits": "commitlint"
   },
   "devDependencies": {
+    "@commitlint/cli": "^21.2.4",
+    "@commitlint/config-conventional": "^21.2.4",
     "@nx/js": "24.0.6",
     "@nx/vite": "24.0.6",
     "@nx/vitest": "24.0.6",
     "@nx/web": "24.0.6",
+    "husky": "^9.1.7",
     "nx": "24.0.6",
     "tsx": "^4.0.0",
     "typescript": "^6.0.3",
