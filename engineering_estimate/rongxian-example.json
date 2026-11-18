@@ -1,0 +1,22 @@
+{
+  "project": "容县武威 50 MW 风电项目",
+  "source": "《容县武威 50MW 风电项目可研报告（报批版）》第 12 章工程设计概算。分项与同章汇总口径交叉核对",
+  "capacity_mw": 50,
+  "tax_basis": "unconfirmed",
+  "line_items": [
+    {"id": "temporary-works", "name": "施工辅助工程", "category": "construction_support", "amount_wan": 540, "source": "可研第 12 章投资主要指标"},
+    {"id": "equipment", "name": "设备及安装工程", "category": "equipment_and_installation", "amount_wan": 16191, "source": "可研第 12 章投资主要指标"},
+    {"id": "civil", "name": "建筑工程", "category": "civil_works", "amount_wan": 4044, "source": "可研第 12 章投资主要指标"},
+    {"id": "other", "name": "其他费用", "category": "other_costs", "amount_wan": 3604, "source": "可研第 12 章投资主要指标"},
+    {"id": "reserve", "name": "基本预备费", "category": "basic_contingency", "amount_wan": 366, "source": "可研第 12 章投资主要指标"}
+  ],
+  "price_contingency_wan": 0,
+  "construction_interest_wan": 364.21,
+  "reported": {
+    "static_investment_wan": 22763.35,
+    "static_unit_cost_cny_per_kw": 4552.67,
+    "dynamic_investment_wan": 23127.56,
+    "dynamic_unit_cost_cny_per_kw": 4625.51
+  },
+  "coverage": {}
+}

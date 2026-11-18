@@ -1,0 +1,30 @@
+{
+  "project": "演示用 50 MW 陆上风电项目",
+  "source": "合成数据，演示概算与财务的接口及勾稽过程",
+  "capacity_mw": 50,
+  "tax_basis": "tax_inclusive",
+  "line_items": [
+    {"id": "support", "name": "施工辅助工程", "category": "construction_support", "amount_wan": 600, "source": "合成样例"},
+    {"id": "equipment", "name": "设备及安装工程", "category": "equipment_and_installation", "amount_wan": 16500, "source": "合成样例"},
+    {"id": "civil", "name": "建筑工程", "category": "civil_works", "amount_wan": 4000, "source": "合成样例"},
+    {"id": "other", "name": "其他费用（含建设期地租和前期管理）", "category": "other_costs", "amount_wan": 2500, "source": "合成样例"},
+    {"id": "reserve", "name": "基本预备费", "category": "basic_contingency", "amount_wan": 400, "source": "合成样例"}
+  ],
+  "price_contingency_wan": 100,
+  "construction_interest_wan": 500,
+  "reported": {
+    "static_investment_wan": 24000,
+    "static_unit_cost_cny_per_kw": 4800,
+    "dynamic_investment_wan": 24600
+  },
+  "coverage": {
+    "permanent_land": "excluded",
+    "temporary_land": "excluded",
+    "construction_land_rent": "included",
+    "development_and_construction_management": "included",
+    "local_support": "excluded",
+    "grid_export": "excluded",
+    "storage": "excluded"
+  },
+  "annual_static_capex_wan": [24000]
+}

@@ -1,0 +1,14 @@
+{
+  "capacity_mw": 50,
+  "benchmark": {
+    "source": "合成样例，用于验证计算，不代表国家电投基准表",
+    "scenario": "陆上风电合成情景",
+    "tax_basis": "tax_inclusive",
+    "investment_basis": "dynamic",
+    "base_unit_cost_cny_per_kw": 4300,
+    "adjustments": [
+      {"id": "foundation", "name": "基础方案差额", "delta_cny_per_kw": 180, "source": "合成样例"},
+      {"id": "collection", "name": "集电方案差额", "delta_cny_per_kw": -30, "source": "合成样例"}
+    ]
+  }
+}
