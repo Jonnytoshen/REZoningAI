@@ -28,6 +28,15 @@
       "include": [
         "apps/web/**/*"
       ]
+    },
+    {
+      "plugin": "@nx/vitest",
+      "include": [
+        "apps/api/**/*"
+      ],
+      "options": {
+        "testMode": "run"
+      }
     }
   ]
 }

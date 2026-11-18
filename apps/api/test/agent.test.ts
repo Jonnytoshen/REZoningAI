@@ -5,8 +5,8 @@ import { mkdtemp, rm } from 'node:fs/promises';
 import { createServer } from 'node:http';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { test } from 'node:test';
-import type { ChatEvent, ChatSession, SessionSummary } from '../../../shared/chat.js';
+import type { ChatEvent, ChatSession, SessionSummary } from '@rezoning-ai/chat';
+import { afterAll, beforeAll, describe, test, vi } from 'vitest';
 import { createApp } from '../src/app.js';
 import { ChatStore } from '../src/chat-store.js';
 
@@ -18,8 +18,12 @@ interface UpstreamRequest {
   tools?: { function: { name: string } }[];
 }
 
-test('chat API streams text and tools, restores history, and retries an interrupted turn', async (t) => {
-  const directory = await mkdtemp(join(tmpdir(), 'rezoning-test-'));
+// The restart scenario checks the chat history written by earlier scenarios.
+describe('chat API conversation and recovery', { concurrent: false, shuffle: false }, () => {
+  let directory: string | undefined;
+  let app: Awaited<ReturnType<typeof createApp>> | undefined;
+  let first: SessionSummary;
+  let second: SessionSummary;
   const requests: UpstreamRequest[] = [];
   let interruptNext = true;
   const upstream = createServer(async (req, res) => {
@@ -71,27 +75,42 @@ test('chat API streams text and tools, restores history, and retries an interrup
       resolve(address.port);
     });
   });
-  const port = await listen();
-  process.env.DASHSCOPE_API_KEY = 'test-key';
-  process.env.DASHSCOPE_BASE_URL = `http://127.0.0.1:${port}/compatible-mode/v1`;
-  process.env.DASHSCOPE_MODEL = 'qwen-plus';
-  process.env.DATABASE_PATH = join(directory, 'chat.sqlite');
-
-  const start = async () => {
-    const app = await createApp();
+  async function start() {
+    app = await createApp();
     await app.listen(0, '127.0.0.1');
     app.get(ChatStore).recoverInterruptedTurns();
-    return app;
-  };
-  let app = await start();
-  t.after(async () => {
-    await app.close();
-    upstream.closeAllConnections();
-    await new Promise<void>((resolve) => upstream.close(() => resolve()));
-    await rm(directory, { recursive: true, force: true });
+  }
+
+  async function stop() {
+    await app?.close();
+    app = undefined;
+  }
+
+  beforeAll(async () => {
+    directory = await mkdtemp(join(tmpdir(), 'rezoning-test-'));
+    const port = await listen();
+    vi.stubEnv('DASHSCOPE_API_KEY', 'test-key');
+    vi.stubEnv('DASHSCOPE_BASE_URL', `http://127.0.0.1:${port}/compatible-mode/v1`);
+    vi.stubEnv('DASHSCOPE_MODEL', 'qwen-plus');
+    vi.stubEnv('DATABASE_PATH', join(directory, 'chat.sqlite'));
+    await start();
+    first = await create();
+    second = await create();
+  });
+
+  afterAll(async () => {
+    try {
+      await stop();
+    } finally {
+      upstream.closeAllConnections();
+      await new Promise<void>((resolve) => upstream.close(() => resolve()));
+      vi.unstubAllEnvs();
+      if (directory) await rm(directory, { recursive: true, force: true });
+    }
   });
 
   async function call(path: string, options?: RequestInit) {
+    assert.ok(app);
     return fetch(`${await app.getUrl()}/api${path}`, options);
   }
   async function create(): Promise<SessionSummary> {
@@ -116,10 +135,7 @@ test('chat API streams text and tools, restores history, and retries an interrup
     return res.json() as Promise<ChatSession>;
   }
 
-  const first = await create();
-  const second = await create();
-
-  await t.test('two real stream fragments and restored model context', async () => {
+  test('two real stream fragments and restored model context', async () => {
     const turnId = randomUUID();
     const events = await readEvents(await send(first.id, '准备研究陆上风电。', undefined, turnId));
     assert.deepEqual(events.filter((event) => event.type === 'text').map((event) => event.delta), [
@@ -138,7 +154,7 @@ test('chat API streams text and tools, restores history, and retries an interrup
     assert.ok(!requests.at(-1)!.messages.some((message) => message.content === '准备研究陆上风电。'));
   });
 
-  await t.test('tool call fragments are assembled, executed, and sent back to Qwen', async () => {
+  test('tool call fragments are assembled, executed, and sent back to Qwen', async () => {
     const before = Date.now();
     const events = await readEvents(await send(first.id, '现在几点？'));
     const toolEvents = events.filter((event) => event.type === 'tool');
@@ -159,7 +175,7 @@ test('chat API streams text and tools, restores history, and retries an interrup
     assert.ok(completed?.type === 'finish' && completed.turn.reply.includes(result.display));
   });
 
-  await t.test('browser disconnect records interruption and retry keeps the same user message', async () => {
+  test('browser disconnect records interruption and retry keeps the same user message', async () => {
     const controller = new AbortController();
     const response = await send(first.id, '测试回复中断', controller.signal);
     const reader = response.body!.getReader();
@@ -192,13 +208,14 @@ test('chat API streams text and tools, restores history, and retries an interrup
     assert.equal((await get(first.id)).turns.filter((item) => item.input === last.input).length, 1);
   });
 
-  await t.test('SQLite retains both sessions and recovers an unfinished turn after restart', async () => {
+  test('SQLite retains both sessions and recovers an unfinished turn after restart', async () => {
+    assert.ok(app);
     const running = app.get(ChatStore).begin(second.id, '重启前的消息');
     const shutdownResponse = await send(first.id, '关闭时仍在生成');
-    const [shutdownEvents] = await Promise.all([readEvents(shutdownResponse), app.close()]);
+    const [shutdownEvents] = await Promise.all([readEvents(shutdownResponse), stop()]);
     const interrupted = shutdownEvents.at(-1);
     assert.ok(interrupted?.type === 'finish' && interrupted.turn.status === 'interrupted');
-    app = await start();
+    await start();
     const firstSession = await get(first.id);
     const secondSession = await get(second.id);
     assert.equal(firstSession.turns[2].tools[0].status, 'succeeded');

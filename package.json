@@ -13,11 +13,12 @@
     "dev:web": "nx dev web",
     "build": "nx run-many -t build -p api web",
     "start": "node --env-file-if-exists=.env apps/api/dist/main.js",
-    "test": "node --conditions=rezoning-source --import tsx --test apps/api/test/*.test.ts"
+    "test": "nx test api"
   },
   "devDependencies": {
     "@nx/js": "24.0.6",
     "@nx/vite": "24.0.6",
+    "@nx/vitest": "24.0.6",
     "@nx/web": "24.0.6",
     "nx": "24.0.6",
     "tsx": "^4.0.0",
