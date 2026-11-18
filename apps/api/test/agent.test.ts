@@ -19,11 +19,12 @@ interface UpstreamRequest {
 }
 
 // The restart scenario checks the chat history written by earlier scenarios.
-describe('chat API conversation and recovery', { concurrent: false, shuffle: false }, () => {
+describe('chat session API and recovery', { concurrent: false, shuffle: false }, () => {
   let directory: string | undefined;
   let app: Awaited<ReturnType<typeof createApp>> | undefined;
   let first: SessionSummary;
   let second: SessionSummary;
+  const timeTurnId = randomUUID();
   const requests: UpstreamRequest[] = [];
   let interruptNext = true;
   const upstream = createServer(async (req, res) => {
@@ -156,7 +157,7 @@ describe('chat API conversation and recovery', { concurrent: false, shuffle: fal
 
   test('tool call fragments are assembled, executed, and sent back to Qwen', async () => {
     const before = Date.now();
-    const events = await readEvents(await send(first.id, '现在几点？'));
+    const events = await readEvents(await send(first.id, '现在几点？', undefined, timeTurnId));
     const toolEvents = events.filter((event) => event.type === 'tool');
     assert.deepEqual(toolEvents.map((event) => event.tool.status), ['running', 'succeeded']);
     assert.equal(toolEvents[1].tool.name, '读取当前时间');
@@ -218,7 +219,8 @@ describe('chat API conversation and recovery', { concurrent: false, shuffle: fal
     await start();
     const firstSession = await get(first.id);
     const secondSession = await get(second.id);
-    assert.equal(firstSession.turns[2].tools[0].status, 'succeeded');
+    const timeTurn = firstSession.turns.find((turn) => turn.id === timeTurnId);
+    assert.equal(timeTurn?.tools.find((tool) => tool.id === 'time-call')?.status, 'succeeded');
     assert.equal(firstSession.turns.at(-1)?.status, 'interrupted');
     assert.equal(secondSession.turns[0].input, '准备研究地面光伏。');
     assert.equal(secondSession.turns.at(-1)?.id, running.turn.id);

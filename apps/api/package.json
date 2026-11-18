@@ -22,6 +22,9 @@
   "nx": {
     "name": "api",
     "targets": {
+      "test": {
+        "cache": false
+      },
       "dev": {
         "command": "node --env-file-if-exists=.env --watch --conditions=rezoning-source --import tsx apps/api/src/main.ts",
         "continuous": true,
