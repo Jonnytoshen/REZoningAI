@@ -1,6 +1,6 @@
 # Agent 基础版的 Nx 和 pnpm 迁移
 
-Status: ready-for-agent
+Status: resolved
 
 ## 问题陈述
 
