@@ -1,15 +1,18 @@
 import { fileURLToPath } from 'node:url';
 import react from '@vitejs/plugin-react';
-import { defineConfig, loadEnv } from 'vite';
+import { defaultClientConditions, defineConfig, loadEnv } from 'vite';
 
 const root = fileURLToPath(new URL('.', import.meta.url));
 const repository = fileURLToPath(new URL('../..', import.meta.url));
 
-export default defineConfig(({ mode }) => {
+export default defineConfig(({ command, mode }) => {
   const { PORT } = loadEnv(mode, repository, 'PORT');
   return {
     root,
     plugins: [react()],
+    resolve: command === 'serve'
+      ? { conditions: [...defaultClientConditions, 'rezoning-source'] }
+      : undefined,
     server: {
       host: '127.0.0.1',
       fs: { allow: [repository] },

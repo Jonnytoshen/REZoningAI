@@ -4,8 +4,8 @@ import {
   ArrowDown, ArrowRight, ArrowUp, Check, Clock3, CloudSun, FileText, MapPin,
   Menu, MessageSquare, Plus, RotateCw, Square, X,
 } from 'lucide-react';
-import { MAX_MESSAGE_LENGTH } from '../../../shared/chat.js';
-import type { SessionSummary, ToolRun, Turn } from '../../../shared/chat.js';
+import { MAX_MESSAGE_LENGTH } from '@rezoning-ai/chat';
+import type { SessionSummary, ToolRun, Turn } from '@rezoning-ai/chat';
 import { useChat } from './use-chat.js';
 
 const suggestions = [

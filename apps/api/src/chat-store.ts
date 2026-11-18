@@ -5,7 +5,7 @@ import { DatabaseSync } from 'node:sqlite';
 import { ConflictException, NotFoundException } from '@nestjs/common';
 import type { OnApplicationShutdown } from '@nestjs/common';
 import type { ModelMessage } from 'ai';
-import type { ChatSession, SessionSummary, ToolRun, Turn } from '../../../shared/chat.js';
+import type { ChatSession, SessionSummary, ToolRun, Turn } from '@rezoning-ai/chat';
 
 interface TurnRow extends Omit<Turn, 'tools' | 'error'> {
   tools: string;

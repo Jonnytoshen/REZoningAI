@@ -1,9 +1,15 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "rootDir": "../..",
-    "outDir": "../../dist/api",
-    "types": ["node"]
+    "types": [
+      "node"
+    ],
+    "customConditions": [
+      "rezoning-source"
+    ],
+    "noEmit": true
   },
-  "include": ["src/**/*.ts", "../../shared/**/*.ts"]
+  "include": [
+    "src/**/*.ts"
+  ]
 }

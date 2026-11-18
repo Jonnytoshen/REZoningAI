@@ -1,6 +1,8 @@
 # Local Agent data and build output
 node_modules/
 dist/
+.nx/cache/
+.nx/workspace-data/
 .env
 .env.*
 !.env.example

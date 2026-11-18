@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
-import { updateToolRun } from '../../../shared/chat.js';
-import type { ChatEvent, ChatSession, ModelConfig, SessionSummary, Turn } from '../../../shared/chat.js';
+import { updateToolRun } from '@rezoning-ai/chat';
+import type { ChatEvent, ChatSession, ModelConfig, SessionSummary, Turn } from '@rezoning-ai/chat';
 import { createSession, getConfig, getSession, listSessions, streamTurn } from './api.js';
 
 function showSessionInURL(id?: string) {

@@ -3,7 +3,7 @@ import { createOpenAICompatible } from '@ai-sdk/openai-compatible';
 import { stepCountIs, streamText, tool } from 'ai';
 import type { ModelMessage } from 'ai';
 import { z } from 'zod';
-import type { ChatEvent, Turn } from '../../../shared/chat.js';
+import type { ChatEvent, Turn } from '@rezoning-ai/chat';
 import { RuntimeConfig } from './config.js';
 
 const SYSTEM_PROMPT = `你是 REZoningAI 的风光项目前期选址助手，面向中国大陆陆上风电和集中式地面光伏项目的开发人员。

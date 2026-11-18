@@ -1,4 +1,4 @@
-import type { ChatEvent, ChatSession, ModelConfig, SessionSummary } from '../../../shared/chat.js';
+import type { ChatEvent, ChatSession, ModelConfig, SessionSummary } from '@rezoning-ai/chat';
 
 async function check(response: Response): Promise<void> {
   if (response.ok) return;

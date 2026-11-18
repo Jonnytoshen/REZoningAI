@@ -1,0 +1,33 @@
+{
+  "$schema": "./node_modules/nx/schemas/nx-schema.json",
+  "namedInputs": {
+    "default": [
+      "{projectRoot}/**/*",
+      "workspaceConfig"
+    ],
+    "workspaceConfig": [
+      "{workspaceRoot}/tsconfig.json",
+      "{workspaceRoot}/pnpm-lock.yaml"
+    ]
+  },
+  "sync": {
+    "disabledTaskSyncGenerators": ["@nx/js:typescript-sync"]
+  },
+  "plugins": [
+    {
+      "plugin": "@nx/js/typescript",
+      "options": {
+        "build": {
+          "configName": "tsconfig.build.json",
+          "skipBuildCheck": true
+        }
+      }
+    },
+    {
+      "plugin": "@nx/vite/plugin",
+      "include": [
+        "apps/web/**/*"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "name": "@rezoning-ai/chat",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": {
+      "rezoning-source": "./src/chat.ts",
+      "types": "./dist/chat.d.ts",
+      "default": "./dist/chat.js"
+    }
+  },
+  "nx": {
+    "name": "chat"
+  }
+}
