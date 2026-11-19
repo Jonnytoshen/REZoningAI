@@ -190,7 +190,7 @@ describe('chat session API and recovery', { concurrent: false, shuffle: false },
     const busy = await send(first.id, '同时发送');
     assert.equal(busy.status, 409);
     controller.abort();
-    await reader.cancel().catch(() => {});
+    await reader.cancel().catch(() => undefined);
     reader.releaseLock();
 
     let last = (await get(first.id)).turns.at(-1)!;

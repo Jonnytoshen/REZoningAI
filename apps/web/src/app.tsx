@@ -250,7 +250,7 @@ export function App() {
           {chat.error && (
             <div className="connection-error" role="alert">
               <span>{chat.error}</span>
-              {!chat.config && <button onClick={() => location.reload()}>重新连接</button>}
+              {!chat.config && <button onClick={() => window.location.reload()}>重新连接</button>}
             </div>
           )}
           <form className="composer" onSubmit={send}>

@@ -59,7 +59,7 @@ export class QwenAgent {
       abortSignal: signal,
       timeout: { totalMs: 90_000 },
       maxRetries: 0,
-      onError: () => {}, // The stream error is handled below by the application.
+      onError: () => undefined, // The stream error is handled below by the application.
     });
 
     for await (const part of result.fullStream) {

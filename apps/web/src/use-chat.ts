@@ -4,10 +4,10 @@ import type { ChatEvent, ChatSession, ModelConfig, SessionSummary, Turn } from '
 import { createSession, getConfig, getSession, listSessions, streamTurn } from './api.js';
 
 function showSessionInURL(id?: string) {
-  const url = new URL(location.href);
+  const url = new URL(window.location.href);
   if (id) url.searchParams.set('session', id);
   else url.searchParams.delete('session');
-  history.replaceState(null, '', url);
+  window.history.replaceState(null, '', url);
 }
 
 function updateTurn(session: ChatSession, updated: Turn): ChatSession {
@@ -47,7 +47,7 @@ export function useChat() {
         if (!active) return;
         setConfig(model);
         setSessions(history);
-        const id = new URL(location.href).searchParams.get('session');
+        const id = new URL(window.location.href).searchParams.get('session');
         if (id && history.some((item) => item.id === id)) {
           const selected = await getSession(id);
           if (active) setSession(selected);

@@ -59,7 +59,7 @@ export async function streamTurn(
       }
     }
   } finally {
-    await reader.cancel().catch(() => {});
+    await reader.cancel().catch(() => undefined);
     reader.releaseLock();
   }
   if (!finished) throw new Error('连接中断，可重试上次发送的消息。');

@@ -36,6 +36,12 @@ pnpm start
 
 `pnpm test` 通过 Nx 运行一次 Vitest。测试使用本机模拟的 Chat Completions 接口和临时 SQLite 数据库，覆盖流式工具调用、多轮上下文、中断重试和会话恢复。真实模型的验收使用上面的百炼配置。
 
+## 代码检查
+
+运行 `pnpm lint`，用 Nx 和 ESLint 检查 Web、API 和共享聊天包的源码、测试及项目内 JS/TS 配置。各项目沿用 Nx 官方默认规则，React 规则只用于 Web。单独检查时可运行 `pnpm exec nx lint <project>`，其中 `<project>` 为 `web`、`api` 或 `chat`。
+
+安装依赖时会自动启用 Husky。每次提交前都会运行全量检查（包括未暂存的代码），即使提交只改了文档。规则错误会阻止提交，警告不会；钩子不会自动修复或暂存文件。如需恢复钩子，运行 `pnpm run prepare`。
+
 ## Git 提交规范
 
 安装依赖时会自动启用提交消息校验。提交标题用 `type: subject` 或 `type(scope): subject`。scope 可选，可用 `api`、`web` 或 `chat` 标明改动范围。标题可用中文或英文，例如 `docs: 更新启动说明`、`fix(api): handle empty input`。
