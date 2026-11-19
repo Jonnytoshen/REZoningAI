@@ -1,14 +1,8 @@
 {
   "$schema": "./node_modules/nx/schemas/nx-schema.json",
   "namedInputs": {
-    "default": [
-      "{projectRoot}/**/*",
-      "workspaceConfig"
-    ],
-    "workspaceConfig": [
-      "{workspaceRoot}/tsconfig.json",
-      "{workspaceRoot}/pnpm-lock.yaml"
-    ]
+    "default": ["{projectRoot}/**/*", "workspaceConfig"],
+    "workspaceConfig": ["{workspaceRoot}/tsconfig.json", "{workspaceRoot}/pnpm-lock.yaml"]
   },
   "sync": {
     "disabledTaskSyncGenerators": ["@nx/js:typescript-sync"]
@@ -16,10 +10,7 @@
   "plugins": [
     {
       "plugin": "@nx/eslint/plugin",
-      "include": [
-        "apps/**/*",
-        "packages/**/*"
-      ]
+      "include": ["apps/**/*", "packages/**/*"]
     },
     {
       "plugin": "@nx/js/typescript",
@@ -32,15 +23,11 @@
     },
     {
       "plugin": "@nx/vite/plugin",
-      "include": [
-        "apps/web/**/*"
-      ]
+      "include": ["apps/web/**/*"]
     },
     {
       "plugin": "@nx/vitest",
-      "include": [
-        "apps/api/**/*"
-      ],
+      "include": ["apps/api/**/*"],
       "options": {
         "testMode": "run"
       }

@@ -38,9 +38,16 @@ pnpm start
 
 ## 代码检查
 
+```sh
+pnpm format:check  # 列出需要格式化的文件
+pnpm format:write  # 格式化工作区文件
+```
+
+Nx 使用根 Prettier 配置，覆盖 Web、API 和共享聊天包的源码、测试、HTML、CSS，以及项目内和根目录的工具配置。JavaScript 和 TypeScript 使用单引号，换行目标宽度为 100 列。格式化跳过 Markdown、本地工单、独立 Python 原型及其样例、pnpm 锁文件、构建产物、覆盖率报告、缓存和本地数据。
+
 运行 `pnpm lint`，用 Nx 和 ESLint 检查 Web、API 和共享聊天包的源码、测试及项目内 JS/TS 配置。各项目沿用 Nx 官方默认规则，React 规则只用于 Web。单独检查时可运行 `pnpm exec nx lint <project>`，其中 `<project>` 为 `web`、`api` 或 `chat`。
 
-安装依赖时会自动启用 Husky。每次提交前都会运行全量检查（包括未暂存的代码），即使提交只改了文档。规则错误会阻止提交，警告不会；钩子不会自动修复或暂存文件。如需恢复钩子，运行 `pnpm run prepare`。
+安装依赖时会自动启用 Husky。每次提交前先运行 `pnpm format:check`，通过后再运行 `pnpm lint`。即使本次只提交文档，两项检查也会读取各自覆盖范围内的文件，包括未暂存的改动。格式问题或 ESLint 错误会阻止提交，ESLint 警告可以通过。钩子只报告问题，由提交者修复和暂存文件。如需恢复钩子，运行 `pnpm run prepare`。
 
 ## Git 提交规范
 

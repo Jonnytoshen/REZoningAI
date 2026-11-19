@@ -10,9 +10,10 @@ export default defineConfig(({ command, mode }) => {
   return {
     root,
     plugins: [react()],
-    resolve: command === 'serve'
-      ? { conditions: [...defaultClientConditions, 'rezoning-source'] }
-      : undefined,
+    resolve:
+      command === 'serve'
+        ? { conditions: [...defaultClientConditions, 'rezoning-source'] }
+        : undefined,
     server: {
       host: '127.0.0.1',
       fs: { allow: [repository] },

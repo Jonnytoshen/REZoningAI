@@ -13,7 +13,7 @@ function showSessionInURL(id?: string) {
 function updateTurn(session: ChatSession, updated: Turn): ChatSession {
   const exists = session.turns.some((turn) => turn.id === updated.id);
   const turns = exists
-    ? session.turns.map((turn) => turn.id === updated.id ? updated : turn)
+    ? session.turns.map((turn) => (turn.id === updated.id ? updated : turn))
     : [...session.turns, updated];
   return { ...session, turns };
 }
@@ -61,7 +61,9 @@ export function useChat() {
       }
     }
     void load();
-    return () => { active = false; };
+    return () => {
+      active = false;
+    };
   }, []);
 
   useEffect(() => {
@@ -135,11 +137,16 @@ export function useChat() {
       }
       const id = current.id;
       const pending = pendingInput.current;
-      const streamAction = 'input' in action ? {
-        ...action,
-        turnId: pending?.sessionId === id && pending.input === action.input
-          ? pending.turnId : crypto.randomUUID(),
-      } : action;
+      const streamAction =
+        'input' in action
+          ? {
+              ...action,
+              turnId:
+                pending?.sessionId === id && pending.input === action.input
+                  ? pending.turnId
+                  : crypto.randomUUID(),
+            }
+          : action;
       if ('turnId' in streamAction) pendingInput.current = { sessionId: id, ...streamAction };
       turnId = 'turnId' in streamAction ? streamAction.turnId : streamAction.retryId;
       await streamTurn(id, streamAction, controller.signal, (event: ChatEvent) => {
@@ -195,7 +202,21 @@ export function useChat() {
   }
 
   return {
-    config, sessions, session, draft, error, loading, opening, submitting, stopping,
-    waitingForServer, changeBlocked, setDraft, open, startNew, submit, stop,
+    config,
+    sessions,
+    session,
+    draft,
+    error,
+    loading,
+    opening,
+    submitting,
+    stopping,
+    waitingForServer,
+    changeBlocked,
+    setDraft,
+    open,
+    startNew,
+    submit,
+    stop,
   };
 }

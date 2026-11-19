@@ -1,17 +1,9 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "types": [
-      "node"
-    ],
-    "customConditions": [
-      "rezoning-source"
-    ],
+    "types": ["node"],
+    "customConditions": ["rezoning-source"],
     "noEmit": true
   },
-  "include": [
-    "src/**/*.ts",
-    "test/**/*.ts",
-    "vitest.config.ts"
-  ]
+  "include": ["src/**/*.ts", "test/**/*.ts", "vitest.config.ts"]
 }

@@ -1,0 +1,25 @@
+# Documentation and independent Python prototypes
+*.md
+*.livemd
+*.markdown
+*.mdown
+*.mdwn
+*.mkd
+*.mkdn
+*.mkdown
+*.ronn
+*.scd
+*.workbook
+*.mdx
+README
+contents.lr
+/.scratch/
+/engineering_estimate/
+/finance/
+
+# Generated files and workspace caches
+pnpm-lock.yaml
+dist/
+out-tsc/
+coverage/
+/.nx/

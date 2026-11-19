@@ -15,6 +15,8 @@
     "start": "node --env-file-if-exists=.env apps/api/dist/main.js",
     "test": "nx test api",
     "lint": "nx run-many -t lint -p web api chat",
+    "format:write": "nx format:write --all",
+    "format:check": "nx format:check --all",
     "prepare": "husky",
     "lint:commits": "commitlint"
   },
@@ -37,6 +39,7 @@
     "husky": "^9.1.7",
     "jsonc-eslint-parser": "^2.1.0",
     "nx": "24.0.6",
+    "prettier": "~3.6.2",
     "tsx": "^4.0.0",
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.58.0",

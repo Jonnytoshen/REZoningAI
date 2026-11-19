@@ -1,6 +1,13 @@
 import {
-  BadRequestException, Body, Controller, Get, Inject, Param,
-  Post, Res, ServiceUnavailableException,
+  BadRequestException,
+  Body,
+  Controller,
+  Get,
+  Inject,
+  Param,
+  Post,
+  Res,
+  ServiceUnavailableException,
 } from '@nestjs/common';
 import type { BeforeApplicationShutdown } from '@nestjs/common';
 import type { ModelMessage } from 'ai';
@@ -13,7 +20,10 @@ import type { TurnReceipt } from './chat-store.js';
 import { RuntimeConfig } from './config.js';
 import { QwenAgent } from './qwen-agent.js';
 
-const newMessage = z.object({ input: z.string().trim().min(1).max(MAX_MESSAGE_LENGTH), turnId: z.uuid() });
+const newMessage = z.object({
+  input: z.string().trim().min(1).max(MAX_MESSAGE_LENGTH),
+  turnId: z.uuid(),
+});
 
 @Controller('api')
 export class ChatController implements BeforeApplicationShutdown {
@@ -51,7 +61,9 @@ export class ChatController implements BeforeApplicationShutdown {
 
   @Post('sessions/:sessionId/turns')
   async send(
-    @Param('sessionId') sessionId: string, @Body() body: unknown, @Res() res: Response,
+    @Param('sessionId') sessionId: string,
+    @Body() body: unknown,
+    @Res() res: Response,
   ): Promise<void> {
     this.requireModel();
     const parsed = newMessage.safeParse(body);
@@ -63,7 +75,9 @@ export class ChatController implements BeforeApplicationShutdown {
 
   @Post('sessions/:sessionId/turns/:turnId/retry')
   async retry(
-    @Param('sessionId') sessionId: string, @Param('turnId') turnId: string, @Res() res: Response,
+    @Param('sessionId') sessionId: string,
+    @Param('turnId') turnId: string,
+    @Res() res: Response,
   ): Promise<void> {
     this.requireModel();
     await this.stream(this.store.retry(sessionId, turnId), res);
@@ -75,9 +89,7 @@ export class ChatController implements BeforeApplicationShutdown {
     }
   }
 
-  private async stream(
-    { session, turn, replay }: TurnReceipt, res: Response,
-  ): Promise<void> {
+  private async stream({ session, turn, replay }: TurnReceipt, res: Response): Promise<void> {
     const emit = (event: ChatEvent) => {
       if (!res.destroyed && !res.writableEnded) res.write(`data: ${JSON.stringify(event)}\n\n`);
     };
@@ -101,7 +113,10 @@ export class ChatController implements BeforeApplicationShutdown {
     res.once('close', disconnect);
     try {
       messages = await this.agent.generate(
-        this.store.modelHistory(session.id, turn.id), turn, controller.signal, (event) => {
+        this.store.modelHistory(session.id, turn.id),
+        turn,
+        controller.signal,
+        (event) => {
           if (event.type === 'text') turn.reply += event.delta;
           else turn.tools = updateToolRun(turn.tools, event.tool);
           emit(event);
@@ -110,11 +125,13 @@ export class ChatController implements BeforeApplicationShutdown {
       turn.status = 'completed';
     } catch {
       turn.status = controller.signal.aborted ? 'interrupted' : 'failed';
-      turn.error = turn.status === 'interrupted'
-        ? '回复已中断，可以重试这条消息。'
-        : '模型暂时未能完成回复。请检查模型配置或连接后重试。';
-      turn.tools = turn.tools.map((item) => item.status === 'running'
-        ? { ...item, status: 'failed' } : item);
+      turn.error =
+        turn.status === 'interrupted'
+          ? '回复已中断，可以重试这条消息。'
+          : '模型暂时未能完成回复。请检查模型配置或连接后重试。';
+      turn.tools = turn.tools.map((item) =>
+        item.status === 'running' ? { ...item, status: 'failed' } : item,
+      );
     } finally {
       res.off('close', disconnect);
       this.activeStreams.delete(controller);

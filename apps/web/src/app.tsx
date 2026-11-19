@@ -1,36 +1,69 @@
 import { useEffect, useRef } from 'react';
 import type { FormEvent, KeyboardEvent } from 'react';
 import {
-  ArrowDown, ArrowRight, ArrowUp, Check, Clock3, CloudSun, FileText, MapPin,
-  Menu, MessageSquare, Plus, RotateCw, Square, X,
+  ArrowDown,
+  ArrowRight,
+  ArrowUp,
+  Check,
+  Clock3,
+  CloudSun,
+  FileText,
+  MapPin,
+  Menu,
+  MessageSquare,
+  Plus,
+  RotateCw,
+  Square,
+  X,
 } from 'lucide-react';
 import { MAX_MESSAGE_LENGTH } from '@rezoning-ai/chat';
 import type { SessionSummary, ToolRun, Turn } from '@rezoning-ai/chat';
 import { useChat } from './use-chat.js';
 
 const suggestions = [
-  { icon: MapPin, label: '梳理选址输入', input: '启动一个陆上风电前期选址任务，需要先明确哪些信息？' },
+  {
+    icon: MapPin,
+    label: '梳理选址输入',
+    input: '启动一个陆上风电前期选址任务，需要先明确哪些信息？',
+  },
   { icon: FileText, label: '准备资料清单', input: '集中式地面光伏初筛前，应准备哪些图层和资料？' },
   { icon: Clock3, label: '读取当前时间', input: '请读取当前时间，告诉我现在是北京时间几点。' },
 ];
 
 const messageTime = new Intl.DateTimeFormat('zh-CN', {
-  timeZone: 'Asia/Shanghai', hour: '2-digit', minute: '2-digit', hourCycle: 'h23',
+  timeZone: 'Asia/Shanghai',
+  hour: '2-digit',
+  minute: '2-digit',
+  hourCycle: 'h23',
 });
 const sessionDate = new Intl.DateTimeFormat('zh-CN', {
-  timeZone: 'Asia/Shanghai', month: 'numeric', day: 'numeric',
+  timeZone: 'Asia/Shanghai',
+  month: 'numeric',
+  day: 'numeric',
 });
 
 function Brand() {
   return (
     <div className="brand">
-      <span className="brand-mark" aria-hidden="true"><i /><i /><i /></span>
-      <span>REZoning<span className="brand-ai">AI</span></span>
+      <span className="brand-mark" aria-hidden="true">
+        <i />
+        <i />
+        <i />
+      </span>
+      <span>
+        REZoning<span className="brand-ai">AI</span>
+      </span>
     </div>
   );
 }
 
-function SessionNavigation({ sessions, selected, disabled, onNew, onSelect }: {
+function SessionNavigation({
+  sessions,
+  selected,
+  disabled,
+  onNew,
+  onSelect,
+}: {
   sessions: SessionSummary[];
   selected?: string;
   disabled: boolean;
@@ -47,7 +80,9 @@ function SessionNavigation({ sessions, selected, disabled, onNew, onSelect }: {
       <ul className="session-list">
         {sessions.map((item) => (
           <li key={item.id}>
-            <button className="session-button" disabled={disabled}
+            <button
+              className="session-button"
+              disabled={disabled}
               aria-current={item.id === selected ? 'page' : undefined}
               onClick={() => onSelect(item.id)}
             >
@@ -77,7 +112,11 @@ function ToolActivity({ tool }: { tool: ToolRun }) {
   );
 }
 
-function ConversationTurn({ turn, canRetry, onRetry }: {
+function ConversationTurn({
+  turn,
+  canRetry,
+  onRetry,
+}: {
   turn: Turn;
   canRetry: boolean;
   onRetry: () => void;
@@ -93,8 +132,12 @@ function ConversationTurn({ turn, canRetry, onRetry }: {
         <p className="message-text">{turn.input}</p>
       </article>
       <article className="assistant-message">
-        <div className="message-meta"><CloudSun size={16} aria-hidden="true" /> <span>选址助手</span></div>
-        {turn.tools.map((tool) => <ToolActivity key={tool.id} tool={tool} />)}
+        <div className="message-meta">
+          <CloudSun size={16} aria-hidden="true" /> <span>选址助手</span>
+        </div>
+        {turn.tools.map((tool) => (
+          <ToolActivity key={tool.id} tool={tool} />
+        ))}
         {turn.reply && <p className="message-text">{turn.reply}</p>}
         {turn.status === 'running' && !turn.reply && <p className="pending-reply">正在生成回复…</p>}
         {endedEarly && (
@@ -123,7 +166,9 @@ export function App() {
   const canSend = Boolean(chat.config?.configured && chat.draft.trim() && !blocked);
   const current = chat.session?.id;
 
-  useEffect(() => { follow.current = true; }, [current]);
+  useEffect(() => {
+    follow.current = true;
+  }, [current]);
   useEffect(() => {
     const area = transcript.current;
     if (area && follow.current && turns.length) area.scrollTop = area.scrollHeight;
@@ -176,15 +221,24 @@ export function App() {
 
       <header className="topbar">
         <div className="current-view">
-          <button className="icon-button mobile-menu" aria-label="打开聊天历史" onClick={() => dialog.current?.showModal()}>
+          <button
+            className="icon-button mobile-menu"
+            aria-label="打开聊天历史"
+            onClick={() => dialog.current?.showModal()}
+          >
             <Menu size={21} aria-hidden="true" />
           </button>
           <span className="desktop-view">会话工作台</span>
-          <div className="mobile-brand"><Brand /></div>
+          <div className="mobile-brand">
+            <Brand />
+          </div>
         </div>
         {chat.config && (
           <span className="model-label">
-            <span className={chat.config.configured ? 'model-dot ready' : 'model-dot'} aria-hidden="true" />
+            <span
+              className={chat.config.configured ? 'model-dot ready' : 'model-dot'}
+              aria-hidden="true"
+            />
             {chat.config.model}
             {!chat.config.configured && <span className="model-note">待配置</span>}
           </span>
@@ -195,10 +249,14 @@ export function App() {
         {turns.length > 0 && (
           <div className="conversation-header">
             <h1>{chat.session?.title}</h1>
-            <button className="icon-button jump-button" title="跳到最新消息" aria-label="跳到最新消息"
+            <button
+              className="icon-button jump-button"
+              title="跳到最新消息"
+              aria-label="跳到最新消息"
               onClick={() => {
                 follow.current = true;
-                if (transcript.current) transcript.current.scrollTop = transcript.current.scrollHeight;
+                if (transcript.current)
+                  transcript.current.scrollTop = transcript.current.scrollHeight;
               }}
             >
               <ArrowDown size={17} aria-hidden="true" />
@@ -206,7 +264,9 @@ export function App() {
           </div>
         )}
 
-        <div className={`transcript ${turns.length === 0 ? 'is-empty' : ''}`} ref={transcript}
+        <div
+          className={`transcript ${turns.length === 0 ? 'is-empty' : ''}`}
+          ref={transcript}
           onScroll={(event) => {
             const area = event.currentTarget;
             follow.current = area.scrollHeight - area.scrollTop - area.clientHeight < 96;
@@ -231,8 +291,12 @@ export function App() {
           ) : (
             <ol className="turns" aria-label="会话消息">
               {turns.map((turn, index) => (
-                <ConversationTurn key={turn.id} turn={turn}
-                  canRetry={index === turns.length - 1 && !blocked && Boolean(chat.config?.configured)}
+                <ConversationTurn
+                  key={turn.id}
+                  turn={turn}
+                  canRetry={
+                    index === turns.length - 1 && !blocked && Boolean(chat.config?.configured)
+                  }
                   onRetry={() => {
                     follow.current = true;
                     void chat.submit({ retryId: turn.id });
@@ -245,7 +309,9 @@ export function App() {
 
         <footer className="composer-area">
           {chat.config && !chat.config.configured && (
-            <p className="config-notice">配置百炼连接地址和 API Key 后即可发送消息。<code>.env</code></p>
+            <p className="config-notice">
+              配置百炼连接地址和 API Key 后即可发送消息。<code>.env</code>
+            </p>
           )}
           {chat.error && (
             <div className="connection-error" role="alert">
@@ -254,16 +320,30 @@ export function App() {
             </div>
           )}
           <form className="composer" onSubmit={send}>
-            <label className="sr-only" htmlFor="chat-input">消息</label>
-              <textarea id="chat-input" ref={composer} rows={2} maxLength={MAX_MESSAGE_LENGTH}
+            <label className="sr-only" htmlFor="chat-input">
+              消息
+            </label>
+            <textarea
+              id="chat-input"
+              ref={composer}
+              rows={2}
+              maxLength={MAX_MESSAGE_LENGTH}
               placeholder="输入选址问题或已有资料…"
-              value={chat.draft} disabled={chat.loading || chat.opening} readOnly={chat.submitting}
-              onChange={(event) => chat.setDraft(event.target.value)} onKeyDown={handleEnter}
+              value={chat.draft}
+              disabled={chat.loading || chat.opening}
+              readOnly={chat.submitting}
+              onChange={(event) => chat.setDraft(event.target.value)}
+              onKeyDown={handleEnter}
             />
             <div className="composer-actions">
               <span className="compose-hint">Enter 发送 · Shift + Enter 换行</span>
               {chat.submitting ? (
-                <button type="button" className="send-button" onClick={chat.stop} disabled={chat.stopping}>
+                <button
+                  type="button"
+                  className="send-button"
+                  onClick={chat.stop}
+                  disabled={chat.stopping}
+                >
                   <Square size={14} aria-hidden="true" /> {chat.stopping ? '正在停止' : '停止'}
                 </button>
               ) : (
@@ -274,7 +354,11 @@ export function App() {
             </div>
           </form>
           <div className="sr-only" role="status">
-            {chat.submitting || chat.waitingForServer ? '正在生成回复' : turns.length ? '可以继续发送消息' : ''}
+            {chat.submitting || chat.waitingForServer
+              ? '正在生成回复'
+              : turns.length
+                ? '可以继续发送消息'
+                : ''}
           </div>
         </footer>
       </main>
@@ -282,7 +366,11 @@ export function App() {
       <dialog ref={dialog} className="history-dialog" aria-label="聊天历史">
         <div className="history-dialog-top">
           <Brand />
-          <button className="icon-button" aria-label="关闭聊天历史" onClick={() => dialog.current?.close()}>
+          <button
+            className="icon-button"
+            aria-label="关闭聊天历史"
+            onClick={() => dialog.current?.close()}
+          >
             <X size={21} aria-hidden="true" />
           </button>
         </div>

@@ -2,7 +2,7 @@ import type { ChatEvent, ChatSession, ModelConfig, SessionSummary } from '@rezon
 
 async function check(response: Response): Promise<void> {
   if (response.ok) return;
-  const body = await response.json().catch(() => null) as { message?: string } | null;
+  const body = (await response.json().catch(() => null)) as { message?: string } | null;
   throw new Error(body?.message || '暂时无法连接应用，请稍后重试。');
 }
 
@@ -14,12 +14,13 @@ async function request<T>(path: string, options?: RequestInit): Promise<T> {
 
 export const getConfig = () => request<ModelConfig>('/config');
 export const listSessions = () => request<SessionSummary[]>('/sessions');
-export const createSession = (signal: AbortSignal) => request<SessionSummary>('/sessions', {
-  method: 'POST', signal,
-});
-export const getSession = (id: string, signal?: AbortSignal) => request<ChatSession>(
-  `/sessions/${encodeURIComponent(id)}`, { signal },
-);
+export const createSession = (signal: AbortSignal) =>
+  request<SessionSummary>('/sessions', {
+    method: 'POST',
+    signal,
+  });
+export const getSession = (id: string, signal?: AbortSignal) =>
+  request<ChatSession>(`/sessions/${encodeURIComponent(id)}`, { signal });
 
 export async function streamTurn(
   sessionId: string,
@@ -29,12 +30,15 @@ export async function streamTurn(
 ): Promise<void> {
   const base = `/api/sessions/${encodeURIComponent(sessionId)}/turns`;
   const retry = 'retryId' in action;
-  const response = await fetch(retry ? `${base}/${encodeURIComponent(action.retryId)}/retry` : base, {
-    method: 'POST',
-    headers: retry ? undefined : { 'Content-Type': 'application/json' },
-    body: retry ? undefined : JSON.stringify(action),
-    signal,
-  });
+  const response = await fetch(
+    retry ? `${base}/${encodeURIComponent(action.retryId)}/retry` : base,
+    {
+      method: 'POST',
+      headers: retry ? undefined : { 'Content-Type': 'application/json' },
+      body: retry ? undefined : JSON.stringify(action),
+      signal,
+    },
+  );
   await check(response);
   if (!response.body) throw new Error('无法读取回复，请重试。');
 

@@ -36,7 +36,10 @@ describe('chat session API and recovery', { concurrent: false, shuffle: false },
     res.setHeader('Content-Type', 'text/event-stream');
     const write = (delta: object, reason: string | null = null) => {
       const part = {
-        id: 'mock-completion', object: 'chat.completion.chunk', created: 1, model: 'qwen-plus',
+        id: 'mock-completion',
+        object: 'chat.completion.chunk',
+        created: 1,
+        model: 'qwen-plus',
         choices: [{ index: 0, delta, finish_reason: reason }],
       };
       res.write(`data: ${JSON.stringify(part)}\n\n`);
@@ -45,10 +48,17 @@ describe('chat session API and recovery', { concurrent: false, shuffle: false },
       const time = JSON.parse(message.content!) as { display: string };
       write({ content: `当前北京时间 ${time.display}。` });
     } else if (message.content === '现在几点？') {
-      write({ role: 'assistant', tool_calls: [{
-        index: 0, id: 'time-call', type: 'function',
-        function: { name: 'get_current_time', arguments: '{' },
-      }] });
+      write({
+        role: 'assistant',
+        tool_calls: [
+          {
+            index: 0,
+            id: 'time-call',
+            type: 'function',
+            function: { name: 'get_current_time', arguments: '{' },
+          },
+        ],
+      });
       write({ tool_calls: [{ index: 0, function: { arguments: '}' } }] });
       write({}, 'tool_calls');
       res.end('data: [DONE]\n\n');
@@ -68,14 +78,15 @@ describe('chat session API and recovery', { concurrent: false, shuffle: false },
     res.end('data: [DONE]\n\n');
   });
 
-  const listen = () => new Promise<number>((resolve, reject) => {
-    upstream.once('error', reject);
-    upstream.listen(0, '127.0.0.1', () => {
-      const address = upstream.address();
-      assert.ok(address && typeof address !== 'string');
-      resolve(address.port);
+  const listen = () =>
+    new Promise<number>((resolve, reject) => {
+      upstream.once('error', reject);
+      upstream.listen(0, '127.0.0.1', () => {
+        const address = upstream.address();
+        assert.ok(address && typeof address !== 'string');
+        resolve(address.port);
+      });
     });
-  });
   async function start() {
     app = await createApp();
     await app.listen(0, '127.0.0.1');
@@ -121,14 +132,19 @@ describe('chat session API and recovery', { concurrent: false, shuffle: false },
   }
   async function send(id: string, input: string, signal?: AbortSignal, turnId = randomUUID()) {
     return call(`/sessions/${id}/turns`, {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ input, turnId }), signal,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ input, turnId }),
+      signal,
     });
   }
   async function readEvents(res: Response): Promise<ChatEvent[]> {
     assert.equal(res.status, 200);
     assert.match(res.headers.get('content-type')!, /^text\/event-stream/);
-    return (await res.text()).trim().split('\n\n').map((line) => JSON.parse(line.slice(6)) as ChatEvent);
+    return (await res.text())
+      .trim()
+      .split('\n\n')
+      .map((line) => JSON.parse(line.slice(6)) as ChatEvent);
   }
   async function get(id: string): Promise<ChatSession> {
     const res = await call(`/sessions/${id}`);
@@ -139,9 +155,10 @@ describe('chat session API and recovery', { concurrent: false, shuffle: false },
   test('two real stream fragments and restored model context', async () => {
     const turnId = randomUUID();
     const events = await readEvents(await send(first.id, '准备研究陆上风电。', undefined, turnId));
-    assert.deepEqual(events.filter((event) => event.type === 'text').map((event) => event.delta), [
-      '模型', '回复。',
-    ]);
+    assert.deepEqual(
+      events.filter((event) => event.type === 'text').map((event) => event.delta),
+      ['模型', '回复。'],
+    );
     assert.equal(events.at(-1)?.type, 'finish');
     const requestCount = requests.length;
     const replay = await readEvents(await send(first.id, '准备研究陆上风电。', undefined, turnId));
@@ -152,14 +169,19 @@ describe('chat session API and recovery', { concurrent: false, shuffle: false },
     const last = requests.at(-1)!;
     assert.ok(last.messages.some((message) => message.content === '准备研究陆上风电。'));
     await readEvents(await send(second.id, '准备研究地面光伏。'));
-    assert.ok(!requests.at(-1)!.messages.some((message) => message.content === '准备研究陆上风电。'));
+    assert.ok(
+      !requests.at(-1)!.messages.some((message) => message.content === '准备研究陆上风电。'),
+    );
   });
 
   test('tool call fragments are assembled, executed, and sent back to Qwen', async () => {
     const before = Date.now();
     const events = await readEvents(await send(first.id, '现在几点？', undefined, timeTurnId));
     const toolEvents = events.filter((event) => event.type === 'tool');
-    assert.deepEqual(toolEvents.map((event) => event.tool.status), ['running', 'succeeded']);
+    assert.deepEqual(
+      toolEvents.map((event) => event.tool.status),
+      ['running', 'succeeded'],
+    );
     assert.equal(toolEvents[1].tool.name, '读取当前时间');
     const upstreamCall = requests.at(-2)!;
     assert.equal(upstreamCall.model, 'qwen-plus');
@@ -169,7 +191,11 @@ describe('chat session API and recovery', { concurrent: false, shuffle: false },
     const toolResult = requests.at(-1)!.messages.at(-1)!;
     assert.equal(toolResult.role, 'tool');
     assert.equal(toolResult.tool_call_id, 'time-call');
-    const result = JSON.parse(toolResult.content!) as { iso: string; timeZone: string; display: string };
+    const result = JSON.parse(toolResult.content!) as {
+      iso: string;
+      timeZone: string;
+      display: string;
+    };
     assert.equal(result.timeZone, 'Asia/Shanghai');
     assert.ok(Date.parse(result.iso) >= before && Date.parse(result.iso) <= Date.now());
     const completed = events.at(-1);
@@ -200,9 +226,11 @@ describe('chat session API and recovery', { concurrent: false, shuffle: false },
     }
     assert.equal(last.status, 'interrupted');
     assert.equal(last.input, '测试回复中断');
-    const events = await readEvents(await call(`/sessions/${first.id}/turns/${last.id}/retry`, {
-      method: 'POST',
-    }));
+    const events = await readEvents(
+      await call(`/sessions/${first.id}/turns/${last.id}/retry`, {
+        method: 'POST',
+      }),
+    );
     const completed = events.at(-1);
     assert.ok(completed?.type === 'finish' && completed.turn.status === 'completed');
     assert.equal(completed.turn.id, last.id);
@@ -226,6 +254,10 @@ describe('chat session API and recovery', { concurrent: false, shuffle: false },
     assert.equal(secondSession.turns.at(-1)?.id, running.turn.id);
     assert.equal(secondSession.turns.at(-1)?.status, 'interrupted');
     await readEvents(await send(first.id, '继续交流'));
-    assert.ok(requests.at(-1)!.messages.some((item) => item.role === 'tool' && item.tool_call_id === 'time-call'));
+    assert.ok(
+      requests
+        .at(-1)!
+        .messages.some((item) => item.role === 'tool' && item.tool_call_id === 'time-call'),
+    );
   });
 });

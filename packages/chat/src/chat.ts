@@ -40,7 +40,5 @@ export const MAX_MESSAGE_LENGTH = 8_000;
 
 export function updateToolRun(tools: ToolRun[], event: ToolRun): ToolRun[] {
   const existing = tools.some((tool) => tool.id === event.id);
-  return existing
-    ? tools.map((tool) => tool.id === event.id ? event : tool)
-    : [...tools, event];
+  return existing ? tools.map((tool) => (tool.id === event.id ? event : tool)) : [...tools, event];
 }

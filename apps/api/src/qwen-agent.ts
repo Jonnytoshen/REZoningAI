@@ -15,7 +15,10 @@ const SYSTEM_PROMPT = `你是 REZoningAI 的风光项目前期选址助手，面
 const TIME_ZONE = 'Asia/Shanghai';
 const MAX_STEPS = 3;
 const formatter = new Intl.DateTimeFormat('zh-CN', {
-  timeZone: TIME_ZONE, dateStyle: 'medium', timeStyle: 'medium', hourCycle: 'h23',
+  timeZone: TIME_ZONE,
+  dateStyle: 'medium',
+  timeStyle: 'medium',
+  hourCycle: 'h23',
 });
 
 const tools = {
@@ -52,7 +55,7 @@ export class QwenAgent {
       messages: [...history, { role: 'user', content: turn.input }],
       tools,
       stopWhen: stepCountIs(MAX_STEPS),
-      prepareStep: ({ stepNumber }) => stepNumber === MAX_STEPS - 1 ? { toolChoice: 'none' } : {},
+      prepareStep: ({ stepNumber }) => (stepNumber === MAX_STEPS - 1 ? { toolChoice: 'none' } : {}),
       providerOptions: {
         dashscope: { enable_thinking: false, parallel_tool_calls: false },
       },
@@ -75,10 +78,16 @@ export class QwenAgent {
             tool: {
               id: part.toolCallId,
               name: part.toolName === 'get_current_time' ? '读取当前时间' : part.toolName,
-              status: part.type === 'tool-call' ? 'running'
-                : part.type === 'tool-result' ? 'succeeded' : 'failed',
-              detail: part.type === 'tool-result' && !part.dynamic && part.toolName === 'get_current_time'
-                ? `${part.output.display}（北京时间）` : undefined,
+              status:
+                part.type === 'tool-call'
+                  ? 'running'
+                  : part.type === 'tool-result'
+                    ? 'succeeded'
+                    : 'failed',
+              detail:
+                part.type === 'tool-result' && !part.dynamic && part.toolName === 'get_current_time'
+                  ? `${part.output.display}（北京时间）`
+                  : undefined,
             },
           });
           break;
