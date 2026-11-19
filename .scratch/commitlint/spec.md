@@ -1,8 +1,6 @@
 # 基于 Commitlint 规范 Git 提交记录
 
-Status: accepted
-
-Labels: ready-for-agent
+Status: resolved
 
 ## 问题陈述
 
