@@ -57,6 +57,24 @@ Commitlint 会在提交时提示规则违规。错误会阻止提交，警告允
 
 如需重新启用钩子，在仓库根目录运行 `pnpm run prepare`。检查已有提交时，将 `BASE` 换成基准提交的 SHA 或分支名，运行 `pnpm run lint:commits --from BASE --to HEAD`。命令按 Git 的 `BASE..HEAD` 区间检查提交，区间两端应指向不同的提交。
 
+## 发布 Agent
+
+Web、API 和共享聊天包统一升版。Nx Release 在本地 Git 创建版本提交和 `v{version}` 附注 tag，并将发布条目写入根目录的 `CHANGELOG.md`。工程概算和财务 Python 原型独立维护，当发布区间内有符合 Nx 日志分类的原型提交时，根日志也会收录。
+
+| 场景 | 预演 | 正式发布 |
+| --- | --- | --- |
+| 首次发布 | `pnpm release 0.1.0 --first-release --dry-run` | `pnpm release 0.1.0 --first-release` |
+| 后续发布 | `pnpm release --dry-run` | `pnpm release` |
+| 指定版本 | `pnpm release 1.0.0 --dry-run` | `pnpm release 1.0.0` |
+
+后续发布由 Nx 根据上一个发布 tag 之后的 Conventional Commits 推导版本。在 `0.x` 阶段，功能和修复升补丁，破坏性变更升次版本。只有文档或独立原型的提交时，自动升版不产生新版本。[Nx Release 文档](https://nx.dev/docs/features/manage-releases)
+
+1. 安装锁定依赖后，在仓库根目录预演。预演可以在开发分支运行。核对版本和日志，用 `git tag --list vX.Y.Z` 确认目标 tag 可用，将 `vX.Y.Z` 替换为预演显示的 tag。
+2. 在干净的 `main` 正式发布。命令会依次检查 Git 状态、代码格式、ESLint、测试和构建。需要查看检查详情时加 `--verbose`。
+3. 发布成功后，用 `git log -1 --oneline` 核对版本提交，用 `git show --no-patch vX.Y.Z` 确认附注 tag 指向该提交。使用者可按 tag 检出源码并按上文构建和运行。
+
+若版本提交失败，用 `git status`、`git diff --cached` 和 `git log -1` 确认进度。修复失败原因，只撤回本次生成的清单、锁文件和日志改动，再从干净的 `main` 预演和重试。若版本提交已生成但 tag 创建失败，先检查该提交中的版本和日志。确认目标 tag 仍空缺后，可用 `git tag -a vX.Y.Z <版本提交SHA> -m vX.Y.Z` 补建。目标 tag 已存在时，先核对其指向的提交再处理冲突。
+
 ## 选址业务
 
 Agent 基础版可以协助梳理搜索范围、项目类型、资料和待核实事项。地图工作台与候选区筛选随空间工具接入，工程概算和财务原型也按业务需要逐步作为工具接入。[选址方案](docs/early-stage-siting-agent.md) · [Agent 基础版规格](.scratch/agent-foundation/spec.md)

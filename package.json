@@ -12,6 +12,7 @@
     "dev:api": "nx dev api",
     "dev:web": "nx dev web",
     "build": "nx run-many -t build -p api web",
+    "release": "nx release --skip-publish",
     "start": "node --env-file-if-exists=.env apps/api/dist/main.js",
     "test": "nx test api",
     "lint": "nx run-many -t lint -p web api chat",

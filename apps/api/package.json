@@ -1,5 +1,6 @@
 {
   "name": "@rezoning-ai/api",
+  "version": "0.1.0",
   "private": true,
   "type": "module",
   "dependencies": {
@@ -21,6 +22,14 @@
   },
   "nx": {
     "name": "api",
+    "release": {
+      "version": {
+        "manifestRootsToUpdate": [
+          "{projectRoot}",
+          "."
+        ]
+      }
+    },
     "targets": {
       "test": {
         "cache": false

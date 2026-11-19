@@ -7,6 +7,25 @@
   "sync": {
     "disabledTaskSyncGenerators": ["@nx/js:typescript-sync"]
   },
+  "release": {
+    "projects": ["web", "api", "chat"],
+    "projectsRelationship": "fixed",
+    "releaseTag": {
+      "pattern": "v{version}"
+    },
+    "version": {
+      "conventionalCommits": true,
+      "preVersionCommand": "node tools/check-release.mjs"
+    },
+    "changelog": {
+      "workspaceChangelog": {
+        "createRelease": false,
+        "renderOptions": {
+          "applyUsernameToAuthors": false
+        }
+      }
+    }
+  },
   "plugins": [
     {
       "plugin": "@nx/eslint/plugin",
