@@ -1,6 +1,6 @@
 # 为 REZoningAI 建立 Nx Release 流程
 
-Status: ready-for-agent
+Status: resolved
 
 ## 问题陈述
 
