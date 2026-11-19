@@ -49,6 +49,12 @@ Nx 使用根 Prettier 配置，覆盖 Web、API 和共享聊天包的源码、�
 
 安装依赖时会自动启用 Husky。每次提交前先运行 `pnpm format:check`，通过后再运行 `pnpm lint`。即使本次只提交文档，两项检查也会读取各自覆盖范围内的文件，包括未暂存的改动。格式问题或 ESLint 错误会阻止提交，ESLint 警告可以通过。钩子只报告问题，由提交者修复和暂存文件。如需恢复钩子，运行 `pnpm run prepare`。
 
+### PR 检查
+
+指向 `main` 的所有 PR 都会运行 GitHub Actions 的 `Agent checks`，包括纯文档改动。检查在 Linux 上使用 Node.js 24 和仓库声明的 pnpm 版本，按锁文件安装依赖后，依次执行 `pnpm format:check`、`pnpm lint`、`pnpm test` 和 `pnpm build`。API 测试使用模拟模型接口，无需配置真实模型凭据。
+
+`main` 启用必需检查后，PR 分支须与最新的 `main` 同步，且 `Agent checks` 通过才能合并。若检查失败，可在 PR 的 Checks 页查看失败步骤和日志。
+
 ## Git 提交规范
 
 安装依赖时会自动启用提交消息校验。提交标题用 `type: subject` 或 `type(scope): subject`。scope 可选，可用 `api`、`web` 或 `chat` 标明改动范围。标题可用中文或英文，例如 `docs: 更新启动说明`、`fix(api): handle empty input`。
@@ -70,8 +76,12 @@ Web、API 和共享聊天包统一升版。Nx Release 在本地 Git 创建版本
 后续发布由 Nx 根据上一个发布 tag 之后的 Conventional Commits 推导版本。在 `0.x` 阶段，功能和修复升补丁，破坏性变更升次版本。只有文档或独立原型的提交时，自动升版不产生新版本。[Nx Release 文档](https://nx.dev/docs/features/manage-releases)
 
 1. 安装锁定依赖后，在仓库根目录预演。预演可以在开发分支运行。核对版本和日志，用 `git tag --list vX.Y.Z` 确认目标 tag 可用，将 `vX.Y.Z` 替换为预演显示的 tag。
-2. 在干净的 `main` 正式发布。命令会依次检查 Git 状态、代码格式、ESLint、测试和构建。需要查看检查详情时加 `--verbose`。
-3. 发布成功后，用 `git log -1 --oneline` 核对版本提交，用 `git show --no-patch vX.Y.Z` 确认附注 tag 指向该提交。使用者可按 tag 检出源码并按上文构建和运行。
+2. 获取远端最新提交和 tag，将干净的本地 `main` 同步到 `origin/main`，确认两者指向同一提交后正式发布。命令会依次检查 Git 状态、代码格式、ESLint、测试和构建。需要查看检查详情时加 `--verbose`。
+3. 用 `git log -1 --oneline` 核对版本提交，用 `git show --no-patch vX.Y.Z` 确认附注 tag 指向该提交。
+4. 用 `git push --no-follow-tags origin HEAD:refs/heads/release/vX.Y.Z` 将版本提交推到发布分支，再创建指向 `main` 的 PR。等待 `Agent checks` 通过后，在 GitHub 选择 **Create a merge commit** 合入，以保留原始版本提交。
+5. 合入后运行 `git fetch origin main`，再用 `git merge-base --is-ancestor 'vX.Y.Z^{commit}' origin/main` 确认 tag 指向的提交已进入远端 `main`。确认成功后，用 `git push --no-follow-tags origin refs/tags/vX.Y.Z` 单独推送附注 tag。使用者可按 tag 检出源码并按上文构建和运行。
+
+如果 `main` 在发布 PR 等待期间前进，先确认本次 tag 尚未推送，再在新的临时克隆中从最新的 `main` 重新安装锁定依赖、预演并生成版本提交和附注 tag。用 `git push --no-follow-tags --force-with-lease=<发布分支引用>:<旧提交SHA> origin HEAD:<发布分支引用>` 更新现有发布分支。将 `<发布分支引用>` 替换为步骤 4 使用的完整引用，将 `<旧提交SHA>` 替换为原发布提交的 SHA。等 PR 重新通过检查并合入，再用新生成的 tag 执行步骤 5。
 
 若版本提交失败，用 `git status`、`git diff --cached` 和 `git log -1` 确认进度。修复失败原因，只撤回本次生成的清单、锁文件和日志改动，再从干净的 `main` 预演和重试。若版本提交已生成但 tag 创建失败，先检查该提交中的版本和日志。确认目标 tag 仍空缺后，可用 `git tag -a vX.Y.Z <版本提交SHA> -m vX.Y.Z` 补建。目标 tag 已存在时，先核对其指向的提交再处理冲突。
 
