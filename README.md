@@ -55,6 +55,14 @@ Nx 使用根 Prettier 配置，覆盖 Web、API 和共享聊天包的源码、�
 
 `main` 启用必需检查后，PR 分支须与最新的 `main` 同步，且 `Agent checks` 通过才能合并。若检查失败，可在 PR 的 Checks 页查看失败步骤和日志。
 
+### CodeQL 安全扫描
+
+CodeQL 分别扫描 Agent 和共享聊天包的 JavaScript/TypeScript、工程概算与财务原型的 Python，以及 GitHub Actions 工作流。对于所有指向 `main` 的 PR（包括纯文档改动），工作流扫描 GitHub 生成的待合入提交。fork PR 沿用仓库现有的 Actions 审批策略。
+
+`main` 每次更新后都会扫描，另在每周一北京时间 10:23 定时复扫。维护者也可以在 Actions 的 **CodeQL** 工作流中选择 **Run workflow** 手动补跑。PR 的 Checks 页显示扫描状态和新告警，`main` 的告警可在仓库的 **Security** → **Code scanning** 页面查看。
+
+CodeQL 合并规则启用后，GitHub 会等待扫描结果，并在 PR 引入高危或严重安全告警时阻止合并。其余告警继续在报告中供维护者审阅。
+
 ## Git 提交规范
 
 安装依赖时会自动启用提交消息校验。提交标题用 `type: subject` 或 `type(scope): subject`。scope 可选，可用 `api`、`web` 或 `chat` 标明改动范围。标题可用中文或英文，例如 `docs: 更新启动说明`、`fix(api): handle empty input`。
