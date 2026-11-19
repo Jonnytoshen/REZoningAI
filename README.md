@@ -42,7 +42,7 @@ pnpm start
 
 Commitlint 会在提交时提示规则违规。错误会阻止提交，警告允许提交。Git 自动生成的合并、回退及 `fixup!` 等消息按预设规则豁免。[Conventional Commits 规范](https://www.conventionalcommits.org/zh-hans/v1.0.0/)
 
-如需重新启用钩子，在仓库根目录运行 `pnpm run prepare`。检查一组已有提交时，将 `BASE` 换成起点提交的 SHA 或分支名，运行 `pnpm run lint:commits --from BASE --to HEAD`。检查范围包含 `HEAD`，排除 `BASE` 及其祖先。
+如需重新启用钩子，在仓库根目录运行 `pnpm run prepare`。检查已有提交时，将 `BASE` 换成基准提交的 SHA 或分支名，运行 `pnpm run lint:commits --from BASE --to HEAD`。命令按 Git 的 `BASE..HEAD` 区间检查提交，区间两端应指向不同的提交。
 
 ## 选址业务
 
