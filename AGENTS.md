@@ -26,6 +26,7 @@ REZoningAI 是面向陆上风电和集中式地面光伏项目前期选址的助
 
 - 处理规格或工单时，使用 `.scratch/` 下的本地 Markdown，见[工单指南](docs/agents/issue-tracker.md)。
 - 涉及选址术语、筛选规则或业务工具时，按[领域指南](docs/agents/domain.md)先读[术语表](GLOSSARY.md)和相关 ADR。
+- 修改产品标识、应用图标或 favicon 前，先读[品牌标识规范](docs/brand/brand-guidelines.md)。
 - 调整 Agent 发布流程或版本范围时，先读 [ADR 0008](docs/adr/0008-release-agent-as-one-version.md) 和 [README 的发布流程](README.md#发布-agent)。
 
 ## 会话接续
