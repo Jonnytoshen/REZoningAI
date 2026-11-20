@@ -1,12 +1,16 @@
 # Local Agent data and build output
 node_modules/
 dist/
+output/
 .nx/cache/
 .nx/workspace-data/
 .env
 .env.*
 !.env.example
 .data/
+
+# macOS Finder metadata
+.DS_Store
 
 # impeccable-ignore-start
 # Ephemeral output, runtime state, and per-dev overrides.
