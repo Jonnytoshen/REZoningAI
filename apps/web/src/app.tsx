@@ -1,381 +1,180 @@
-import { useEffect, useRef } from 'react';
-import type { FormEvent, KeyboardEvent } from 'react';
-import {
-  ArrowDown,
-  ArrowRight,
-  ArrowUp,
-  Check,
-  Clock3,
-  CloudSun,
-  FileText,
-  MapPin,
-  Menu,
-  MessageSquare,
-  Plus,
-  RotateCw,
-  Square,
-  X,
-} from 'lucide-react';
-import { MAX_MESSAGE_LENGTH } from '@rezoning-ai/chat';
-import type { SessionSummary, ToolRun, Turn } from '@rezoning-ai/chat';
+import { useLayoutEffect, useRef } from 'react';
+import { AlertCircle, Settings2 } from 'lucide-react';
+import { Alert, AlertAction, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { ChatComposer } from '@/components/workbench/chat-composer';
+import { Conversation } from '@/components/workbench/conversation';
+import { HistoryDialog } from '@/components/workbench/history-dialog';
+import { SessionTitle } from '@/components/workbench/session-title';
+import { StarterPrompts } from '@/components/workbench/starter-prompts';
+import { WorkbenchHeader } from '@/components/workbench/workbench-header';
+import { useTheme } from '@/components/workbench/use-theme';
+import { cn } from '@/lib/utils';
 import { useChat } from './use-chat.js';
-
-const suggestions = [
-  {
-    icon: MapPin,
-    label: '梳理选址输入',
-    input: '启动一个陆上风电前期选址任务，需要先明确哪些信息？',
-  },
-  { icon: FileText, label: '准备资料清单', input: '集中式地面光伏初筛前，应准备哪些图层和资料？' },
-  { icon: Clock3, label: '读取当前时间', input: '请读取当前时间，告诉我现在是北京时间几点。' },
-];
-
-const messageTime = new Intl.DateTimeFormat('zh-CN', {
-  timeZone: 'Asia/Shanghai',
-  hour: '2-digit',
-  minute: '2-digit',
-  hourCycle: 'h23',
-});
-const sessionDate = new Intl.DateTimeFormat('zh-CN', {
-  timeZone: 'Asia/Shanghai',
-  month: 'numeric',
-  day: 'numeric',
-});
-
-function Brand() {
-  return (
-    <div className="brand">
-      <span className="brand-mark" aria-hidden="true">
-        <i />
-        <i />
-        <i />
-      </span>
-      <span>
-        REZoning<span className="brand-ai">AI</span>
-      </span>
-    </div>
-  );
-}
-
-function SessionNavigation({
-  sessions,
-  selected,
-  disabled,
-  onNew,
-  onSelect,
-}: {
-  sessions: SessionSummary[];
-  selected?: string;
-  disabled: boolean;
-  onNew: () => void;
-  onSelect: (id: string) => void;
-}) {
-  return (
-    <nav className="history-nav" aria-label="聊天会话">
-      <button className="new-chat" onClick={onNew} disabled={disabled}>
-        <Plus size={17} aria-hidden="true" /> 新建会话
-      </button>
-      <h2>聊天历史</h2>
-      {sessions.length === 0 && <p className="history-empty">暂无会话</p>}
-      <ul className="session-list">
-        {sessions.map((item) => (
-          <li key={item.id}>
-            <button
-              className="session-button"
-              disabled={disabled}
-              aria-current={item.id === selected ? 'page' : undefined}
-              onClick={() => onSelect(item.id)}
-            >
-              <MessageSquare size={15} aria-hidden="true" />
-              <span title={item.title}>{item.title}</span>
-              <time dateTime={item.updatedAt}>{sessionDate.format(new Date(item.updatedAt))}</time>
-            </button>
-          </li>
-        ))}
-      </ul>
-    </nav>
-  );
-}
-
-function ToolActivity({ tool }: { tool: ToolRun }) {
-  const status = { running: '执行中', succeeded: '已完成', failed: '执行失败' }[tool.status];
-  return (
-    <div className="tool-activity">
-      <Clock3 size={15} aria-hidden="true" />
-      <span>{tool.name}</span>
-      <span className={`tool-status ${tool.status}`}>
-        {tool.status === 'succeeded' && <Check size={13} aria-hidden="true" />}
-        {status}
-      </span>
-      {tool.detail && <span className="tool-detail">{tool.detail}</span>}
-    </div>
-  );
-}
-
-function ConversationTurn({
-  turn,
-  canRetry,
-  onRetry,
-}: {
-  turn: Turn;
-  canRetry: boolean;
-  onRetry: () => void;
-}) {
-  const endedEarly = turn.status === 'failed' || turn.status === 'interrupted';
-  return (
-    <li className="turn">
-      <article className="user-message">
-        <div className="message-meta">
-          <span>你</span>
-          <time dateTime={turn.createdAt}>{messageTime.format(new Date(turn.createdAt))}</time>
-        </div>
-        <p className="message-text">{turn.input}</p>
-      </article>
-      <article className="assistant-message">
-        <div className="message-meta">
-          <CloudSun size={16} aria-hidden="true" /> <span>选址助手</span>
-        </div>
-        {turn.tools.map((tool) => (
-          <ToolActivity key={tool.id} tool={tool} />
-        ))}
-        {turn.reply && <p className="message-text">{turn.reply}</p>}
-        {turn.status === 'running' && !turn.reply && <p className="pending-reply">正在生成回复…</p>}
-        {endedEarly && (
-          <div className="turn-error">
-            <span>{turn.error}</span>
-            {canRetry && (
-              <button type="button" className="retry-button" onClick={onRetry}>
-                <RotateCw size={15} aria-hidden="true" /> 重试
-              </button>
-            )}
-          </div>
-        )}
-      </article>
-    </li>
-  );
-}
 
 export function App() {
   const chat = useChat();
+  const { dark, toggleTheme } = useTheme();
   const composer = useRef<HTMLTextAreaElement>(null);
-  const transcript = useRef<HTMLDivElement>(null);
-  const dialog = useRef<HTMLDialogElement>(null);
-  const follow = useRef(true);
+  const promptSelection = useRef<[number, number] | null>(null);
+  const history = useRef<HTMLDialogElement>(null);
   const turns = chat.session?.turns ?? [];
-  const blocked = chat.submitting || chat.waitingForServer || chat.loading || chat.opening;
+  const active = turns.length > 0 || chat.opening;
+  const loading = chat.loading || chat.opening;
+  const blocked = loading || chat.submitting || chat.waitingForServer;
   const canSend = Boolean(chat.config?.configured && chat.draft.trim() && !blocked);
-  const current = chat.session?.id;
 
-  useEffect(() => {
-    follow.current = true;
-  }, [current]);
-  useEffect(() => {
-    const area = transcript.current;
-    if (area && follow.current && turns.length) area.scrollTop = area.scrollHeight;
-  }, [turns]);
+  useLayoutEffect(() => {
+    if (!promptSelection.current) return;
+    composer.current?.setSelectionRange(...promptSelection.current);
+    promptSelection.current = null;
+  }, [chat.draft]);
 
-  function select(id: string) {
-    dialog.current?.close();
+  function selectSession(id: string) {
+    history.current?.close();
     void chat.open(id);
   }
 
   function newChat() {
-    dialog.current?.close();
     chat.startNew();
     composer.current?.focus();
   }
 
-  function choose(input: string) {
-    chat.setDraft(input);
+  function choosePrompt(draft: string, promptStart: number) {
+    const start = draft.indexOf('【', promptStart);
+    const end = draft.indexOf('】', start);
+    if (start !== -1 && end !== -1) promptSelection.current = [start, end + 1];
+    chat.setDraft(draft);
     composer.current?.focus();
   }
 
-  function send(event?: FormEvent) {
-    event?.preventDefault();
-    if (!canSend) return;
-    follow.current = true;
-    void chat.submit({ input: chat.draft.trim() });
-  }
-
-  function handleEnter(event: KeyboardEvent<HTMLTextAreaElement>) {
-    if (event.key === 'Enter' && !event.shiftKey && !event.nativeEvent.isComposing) {
-      event.preventDefault();
-      send();
-    }
-  }
-
-  const navProps = {
-    sessions: chat.sessions,
-    selected: current,
-    disabled: chat.changeBlocked,
-    onNew: newChat,
-    onSelect: select,
-  };
-
   return (
-    <div className="workspace">
-      <aside className="desktop-history">
-        <Brand />
-        <SessionNavigation {...navProps} />
-      </aside>
+    <div className="flex h-dvh min-w-0 flex-col">
+      <WorkbenchHeader
+        dark={dark}
+        changeBlocked={chat.changeBlocked}
+        onToggleTheme={toggleTheme}
+        onOpenHistory={() => history.current?.showModal()}
+        onNewChat={newChat}
+      />
 
-      <header className="topbar">
-        <div className="current-view">
-          <button
-            className="icon-button mobile-menu"
-            aria-label="打开聊天历史"
-            onClick={() => dialog.current?.showModal()}
-          >
-            <Menu size={21} aria-hidden="true" />
-          </button>
-          <span className="desktop-view">会话工作台</span>
-          <div className="mobile-brand">
-            <Brand />
-          </div>
-        </div>
-        {chat.config && (
-          <span className="model-label">
-            <span
-              className={chat.config.configured ? 'model-dot ready' : 'model-dot'}
-              aria-hidden="true"
-            />
-            {chat.config.model}
-            {!chat.config.configured && <span className="model-note">待配置</span>}
-          </span>
-        )}
-      </header>
-
-      <main className={`sheet ${turns.length === 0 ? 'is-new' : ''}`}>
-        {turns.length > 0 && (
-          <div className="conversation-header">
-            <h1>{chat.session?.title}</h1>
-            <button
-              className="icon-button jump-button"
-              title="跳到最新消息"
-              aria-label="跳到最新消息"
-              onClick={() => {
-                follow.current = true;
-                if (transcript.current)
-                  transcript.current.scrollTop = transcript.current.scrollHeight;
-              }}
-            >
-              <ArrowDown size={17} aria-hidden="true" />
-            </button>
-          </div>
-        )}
-
+      <main className={cn('flex min-h-0 flex-1 flex-col', !active && 'overflow-y-auto')}>
         <div
-          className={`transcript ${turns.length === 0 ? 'is-empty' : ''}`}
-          ref={transcript}
-          onScroll={(event) => {
-            const area = event.currentTarget;
-            follow.current = area.scrollHeight - area.scrollTop - area.clientHeight < 96;
-          }}
+          className={cn(
+            'mx-auto flex w-full flex-col px-4 sm:px-6',
+            active
+              ? 'max-w-conversation min-h-0 flex-1'
+              : 'max-w-5xl gap-6 pt-11 pb-12 sm:gap-10 sm:pt-20 lg:pt-28 lg:short:gap-8 lg:short:pt-12 xl:translate-x-11 xl:px-0',
+          )}
         >
-          {turns.length === 0 ? (
-            <section className="welcome">
-              <h1>风光选址助手</h1>
-              <p>从一个地区或项目类型开始，一起梳理前期选址所需的资料。</p>
-              <ul className="suggestions" aria-label="对话示例">
-                {suggestions.map(({ icon: Icon, label, input }) => (
-                  <li key={label}>
-                    <button onClick={() => choose(input)} disabled={blocked}>
-                      <Icon size={16} aria-hidden="true" />
-                      <span>{label}</span>
-                      <ArrowRight size={15} aria-hidden="true" />
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            </section>
-          ) : (
-            <ol className="turns" aria-label="会话消息">
-              {turns.map((turn, index) => (
-                <ConversationTurn
-                  key={turn.id}
-                  turn={turn}
-                  canRetry={
-                    index === turns.length - 1 && !blocked && Boolean(chat.config?.configured)
-                  }
-                  onRetry={() => {
-                    follow.current = true;
-                    void chat.submit({ retryId: turn.id });
-                  }}
+          {active ? (
+            <>
+              <div className="flex min-h-16 shrink-0 items-center justify-between gap-3 border-b border-border py-3">
+                <SessionTitle
+                  key={chat.session?.id}
+                  title={chat.opening ? '正在打开会话' : (chat.session?.title ?? '新会话')}
+                  onRename={!loading && chat.session ? chat.rename : undefined}
+                  disabled={blocked}
                 />
-              ))}
-            </ol>
+                {chat.config?.configured && (
+                  <Badge variant="secondary" className="max-w-32 gap-1.5 sm:max-w-48">
+                    <span
+                      className="size-1.5 shrink-0 rounded-full bg-brand-marker"
+                      aria-hidden="true"
+                    />
+                    <span className="truncate" title={chat.config.model}>
+                      {chat.config.model}
+                    </span>
+                  </Badge>
+                )}
+              </div>
+              <Conversation
+                key={chat.session?.id}
+                turns={turns}
+                loading={chat.opening}
+                retryEnabled={!blocked && Boolean(chat.config?.configured)}
+                onRetry={(retryId) => void chat.submit({ retryId })}
+              />
+            </>
+          ) : (
+            <div className="flex flex-col gap-3 sm:gap-4">
+              <h1 className="text-3xl font-bold lg:relative lg:top-1 lg:text-workbench-title lg:tracking-workbench-title">
+                从哪里开始选址？
+              </h1>
+              <p className="text-base leading-relaxed text-muted-foreground lg:text-workbench-lead lg:tracking-wide">
+                告诉我项目类型和大致区域，我可以帮你梳理选址所需资料和待核实事项。
+              </p>
+            </div>
+          )}
+
+          <div className={cn('flex shrink-0 flex-col gap-3', active && 'pt-3 pb-4')}>
+            {chat.config && !chat.config.configured && (
+              <Alert>
+                <Settings2 aria-hidden="true" />
+                <AlertTitle>待配置百炼</AlertTitle>
+                <AlertDescription>
+                  在本地 <code>.env</code> 填写百炼连接地址和 API Key 后重启应用。
+                </AlertDescription>
+              </Alert>
+            )}
+            {chat.error && (
+              <Alert variant="destructive">
+                <AlertCircle aria-hidden="true" />
+                <AlertDescription>{chat.error}</AlertDescription>
+                {!chat.config && (
+                  <AlertAction>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => window.location.reload()}
+                    >
+                      重新连接
+                    </Button>
+                  </AlertAction>
+                )}
+              </Alert>
+            )}
+            <ChatComposer
+              inputRef={composer}
+              isStarter={!active}
+              draft={chat.draft}
+              canSend={canSend}
+              loading={loading}
+              submitting={chat.submitting}
+              stopping={chat.stopping}
+              onDraftChange={chat.setDraft}
+              onSend={() => void chat.submit({ input: chat.draft.trim() })}
+              onStop={chat.stop}
+            />
+          </div>
+
+          {!active && (
+            <StarterPrompts draft={chat.draft} disabled={blocked} onChoose={choosePrompt} />
           )}
         </div>
-
-        <footer className="composer-area">
-          {chat.config && !chat.config.configured && (
-            <p className="config-notice">
-              配置百炼连接地址和 API Key 后即可发送消息。<code>.env</code>
-            </p>
-          )}
-          {chat.error && (
-            <div className="connection-error" role="alert">
-              <span>{chat.error}</span>
-              {!chat.config && <button onClick={() => window.location.reload()}>重新连接</button>}
-            </div>
-          )}
-          <form className="composer" onSubmit={send}>
-            <label className="sr-only" htmlFor="chat-input">
-              消息
-            </label>
-            <textarea
-              id="chat-input"
-              ref={composer}
-              rows={2}
-              maxLength={MAX_MESSAGE_LENGTH}
-              placeholder="输入选址问题或已有资料…"
-              value={chat.draft}
-              disabled={chat.loading || chat.opening}
-              readOnly={chat.submitting}
-              onChange={(event) => chat.setDraft(event.target.value)}
-              onKeyDown={handleEnter}
-            />
-            <div className="composer-actions">
-              <span className="compose-hint">Enter 发送 · Shift + Enter 换行</span>
-              {chat.submitting ? (
-                <button
-                  type="button"
-                  className="send-button"
-                  onClick={chat.stop}
-                  disabled={chat.stopping}
-                >
-                  <Square size={14} aria-hidden="true" /> {chat.stopping ? '正在停止' : '停止'}
-                </button>
-              ) : (
-                <button type="submit" className="send-button" disabled={!canSend}>
-                  <ArrowUp size={17} aria-hidden="true" /> 发送
-                </button>
-              )}
-            </div>
-          </form>
-          <div className="sr-only" role="status">
-            {chat.submitting || chat.waitingForServer
-              ? '正在生成回复'
-              : turns.length
-                ? '可以继续发送消息'
-                : ''}
-          </div>
-        </footer>
       </main>
 
-      <dialog ref={dialog} className="history-dialog" aria-label="聊天历史">
-        <div className="history-dialog-top">
-          <Brand />
-          <button
-            className="icon-button"
-            aria-label="关闭聊天历史"
-            onClick={() => dialog.current?.close()}
-          >
-            <X size={21} aria-hidden="true" />
-          </button>
-        </div>
-        <SessionNavigation {...navProps} />
-      </dialog>
+      <HistoryDialog
+        dialogRef={history}
+        sessions={chat.sessions}
+        selectedId={chat.session?.id}
+        loading={chat.loading}
+        disabled={chat.changeBlocked}
+        error={chat.error}
+        onSelect={selectSession}
+      />
+      <div className="sr-only" role="status">
+        {loading
+          ? '正在加载会话'
+          : chat.stopping
+            ? '正在停止回复'
+            : chat.submitting || chat.waitingForServer
+              ? '正在生成回复'
+              : turns.at(-1)?.status === 'completed'
+                ? '回复已完成，可以继续发送消息'
+                : ''}
+      </div>
     </div>
   );
 }

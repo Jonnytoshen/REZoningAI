@@ -4,6 +4,10 @@
     "module": "ESNext",
     "moduleResolution": "Bundler",
     "jsx": "react-jsx",
+    "paths": {
+      "@/*": ["./src/*"],
+      "@brand-assets/*": ["../../docs/brand/assets/*"]
+    },
     "lib": ["ES2023", "DOM", "DOM.Iterable"],
     "types": ["vite/client", "node"],
     "customConditions": ["rezoning-source"],

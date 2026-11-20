@@ -1,0 +1,439 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-20T04:30:03Z",
+  "title": "Design System: REZoningAI Agent 工作台",
+  "extensions": {
+    "colorMeta": {
+      "primary": {
+        "role": "primary",
+        "displayName": "墨黑",
+        "description": "浅色主题的正文与主操作底色，深色主题的工作面。",
+        "tonalRamp": [
+          "oklch(15% 0 0)",
+          "oklch(26.5% 0 0)",
+          "oklch(38% 0 0)",
+          "oklch(49.5% 0 0)",
+          "oklch(61% 0 0)",
+          "oklch(72% 0 0)",
+          "oklch(83.5% 0 0)",
+          "oklch(95% 0 0)"
+        ]
+      },
+      "cream": {
+        "role": "neutral",
+        "displayName": "奶白",
+        "description": "浅色主题的工作面，深色主题的正文与主操作底色。",
+        "tonalRamp": [
+          "oklch(15% 0.0074 80.7)",
+          "oklch(26.5% 0.0074 80.7)",
+          "oklch(38% 0.0074 80.7)",
+          "oklch(49.5% 0.0074 80.7)",
+          "oklch(61% 0.0074 80.7)",
+          "oklch(72% 0.0074 80.7)",
+          "oklch(83.5% 0.0074 80.7)",
+          "oklch(95% 0.0074 80.7)"
+        ]
+      },
+      "surface": {
+        "role": "neutral",
+        "displayName": "白色输入表面",
+        "description": "浅色输入区与提示。",
+        "tonalRamp": [
+          "oklch(15% 0 0)",
+          "oklch(26.5% 0 0)",
+          "oklch(38% 0 0)",
+          "oklch(49.5% 0 0)",
+          "oklch(61% 0 0)",
+          "oklch(72% 0 0)",
+          "oklch(83.5% 0 0)",
+          "oklch(95% 0 0)"
+        ]
+      },
+      "surface-dark": {
+        "role": "neutral",
+        "displayName": "深灰输入表面",
+        "description": "深色输入区与提示。",
+        "tonalRamp": [
+          "oklch(15% 0.0024 67.7)",
+          "oklch(26.5% 0.0024 67.7)",
+          "oklch(38% 0.0024 67.7)",
+          "oklch(49.5% 0.0024 67.7)",
+          "oklch(61% 0.0024 67.7)",
+          "oklch(72% 0.0024 67.7)",
+          "oklch(83.5% 0.0024 67.7)",
+          "oklch(95% 0.0024 67.7)"
+        ]
+      },
+      "secondary": {
+        "role": "neutral",
+        "displayName": "暖灰辅助表面",
+        "description": "浅色用户消息、选中会话与模型标签。",
+        "tonalRamp": [
+          "oklch(15% 0.012 79.8)",
+          "oklch(26.5% 0.012 79.8)",
+          "oklch(38% 0.012 79.8)",
+          "oklch(49.5% 0.012 79.8)",
+          "oklch(61% 0.012 79.8)",
+          "oklch(72% 0.012 79.8)",
+          "oklch(83.5% 0.012 79.8)",
+          "oklch(95% 0.012 79.8)"
+        ]
+      },
+      "secondary-dark": {
+        "role": "neutral",
+        "displayName": "深灰辅助表面",
+        "description": "深色用户消息、选中会话、模型标签与静态占位。",
+        "tonalRamp": [
+          "oklch(15% 0.006 78.2)",
+          "oklch(26.5% 0.006 78.2)",
+          "oklch(38% 0.006 78.2)",
+          "oklch(49.5% 0.006 78.2)",
+          "oklch(61% 0.006 78.2)",
+          "oklch(72% 0.006 78.2)",
+          "oklch(83.5% 0.006 78.2)",
+          "oklch(95% 0.006 78.2)"
+        ]
+      },
+      "muted": {
+        "role": "neutral",
+        "displayName": "浅暖灰",
+        "description": "浅色悬停和加载占位。",
+        "tonalRamp": [
+          "oklch(15% 0.0103 81.8)",
+          "oklch(26.5% 0.0103 81.8)",
+          "oklch(38% 0.0103 81.8)",
+          "oklch(49.5% 0.0103 81.8)",
+          "oklch(61% 0.0103 81.8)",
+          "oklch(72% 0.0103 81.8)",
+          "oklch(83.5% 0.0103 81.8)",
+          "oklch(95% 0.0103 81.8)"
+        ]
+      },
+      "text-muted": {
+        "role": "neutral",
+        "displayName": "辅助灰",
+        "description": "浅色说明与时间。",
+        "tonalRamp": [
+          "oklch(15% 0.0109 78.2)",
+          "oklch(26.5% 0.0109 78.2)",
+          "oklch(38% 0.0109 78.2)",
+          "oklch(49.5% 0.0109 78.2)",
+          "oklch(61% 0.0109 78.2)",
+          "oklch(72% 0.0109 78.2)",
+          "oklch(83.5% 0.0109 78.2)",
+          "oklch(95% 0.0109 78.2)"
+        ]
+      },
+      "text-muted-dark": {
+        "role": "neutral",
+        "displayName": "深色主题辅助文字",
+        "description": "深色说明与时间，同时用于焦点。",
+        "tonalRamp": [
+          "oklch(15% 0.0172 70.5)",
+          "oklch(26.5% 0.0172 70.5)",
+          "oklch(38% 0.0172 70.5)",
+          "oklch(49.5% 0.0172 70.5)",
+          "oklch(61% 0.0172 70.5)",
+          "oklch(72% 0.0172 70.5)",
+          "oklch(83.5% 0.0172 70.5)",
+          "oklch(95% 0.0172 70.5)"
+        ]
+      },
+      "line": {
+        "role": "neutral",
+        "displayName": "浅色分隔线",
+        "description": "区分工具栏和列表相邻区域。",
+        "tonalRamp": [
+          "oklch(15% 0.0175 76.1)",
+          "oklch(26.5% 0.0175 76.1)",
+          "oklch(38% 0.0175 76.1)",
+          "oklch(49.5% 0.0175 76.1)",
+          "oklch(61% 0.0175 76.1)",
+          "oklch(72% 0.0175 76.1)",
+          "oklch(83.5% 0.0175 76.1)",
+          "oklch(95% 0.0175 76.1)"
+        ]
+      },
+      "line-dark": {
+        "role": "neutral",
+        "displayName": "深色分隔线",
+        "description": "区分深色工具栏和列表相邻区域。",
+        "tonalRamp": [
+          "oklch(15% 0.0108 67.5)",
+          "oklch(26.5% 0.0108 67.5)",
+          "oklch(38% 0.0108 67.5)",
+          "oklch(49.5% 0.0108 67.5)",
+          "oklch(61% 0.0108 67.5)",
+          "oklch(72% 0.0108 67.5)",
+          "oklch(83.5% 0.0108 67.5)",
+          "oklch(95% 0.0108 67.5)"
+        ]
+      },
+      "field-outline": {
+        "role": "neutral",
+        "displayName": "浅色控件边界",
+        "description": "输入框、描边按钮和常用问题组。",
+        "tonalRamp": [
+          "oklch(15% 0.0217 65)",
+          "oklch(26.5% 0.0217 65)",
+          "oklch(38% 0.0217 65)",
+          "oklch(49.5% 0.0217 65)",
+          "oklch(61% 0.0217 65)",
+          "oklch(72% 0.0217 65)",
+          "oklch(83.5% 0.0217 65)",
+          "oklch(95% 0.0217 65)"
+        ]
+      },
+      "field-outline-dark": {
+        "role": "neutral",
+        "displayName": "深色控件边界",
+        "description": "深色输入框、描边按钮和常用问题组。",
+        "tonalRamp": [
+          "oklch(15% 0.0188 70.4)",
+          "oklch(26.5% 0.0188 70.4)",
+          "oklch(38% 0.0188 70.4)",
+          "oklch(49.5% 0.0188 70.4)",
+          "oklch(61% 0.0188 70.4)",
+          "oklch(72% 0.0188 70.4)",
+          "oklch(83.5% 0.0188 70.4)",
+          "oklch(95% 0.0188 70.4)"
+        ]
+      },
+      "focus": {
+        "role": "neutral",
+        "displayName": "浅色焦点",
+        "description": "浅色键盘焦点外框。",
+        "tonalRamp": [
+          "oklch(15% 0.0237 69.6)",
+          "oklch(26.5% 0.0237 69.6)",
+          "oklch(38% 0.0237 69.6)",
+          "oklch(49.5% 0.0237 69.6)",
+          "oklch(61% 0.0237 69.6)",
+          "oklch(72% 0.0237 69.6)",
+          "oklch(83.5% 0.0237 69.6)",
+          "oklch(95% 0.0237 69.6)"
+        ]
+      },
+      "brand-marker": {
+        "role": "primary",
+        "displayName": "品牌亮蓝",
+        "description": "浅色主题下的小面积圆点。",
+        "tonalRamp": [
+          "oklch(15% 0.2334 266.6)",
+          "oklch(26.5% 0.2334 266.6)",
+          "oklch(38% 0.2334 266.6)",
+          "oklch(49.5% 0.2334 266.6)",
+          "oklch(61% 0.2334 266.6)",
+          "oklch(72% 0.2334 266.6)",
+          "oklch(83.5% 0.2334 266.6)",
+          "oklch(95% 0.2334 266.6)"
+        ]
+      },
+      "brand-marker-dark": {
+        "role": "primary",
+        "displayName": "深色底蓝",
+        "description": "深色主题下的小面积圆点。",
+        "tonalRamp": [
+          "oklch(15% 0.1516 269.7)",
+          "oklch(26.5% 0.1516 269.7)",
+          "oklch(38% 0.1516 269.7)",
+          "oklch(49.5% 0.1516 269.7)",
+          "oklch(61% 0.1516 269.7)",
+          "oklch(72% 0.1516 269.7)",
+          "oklch(83.5% 0.1516 269.7)",
+          "oklch(95% 0.1516 269.7)"
+        ]
+      },
+      "destructive": {
+        "role": "status",
+        "displayName": "错误红",
+        "description": "浅色错误的文字与图标。",
+        "tonalRamp": [
+          "oklch(15% 0.142 29.2)",
+          "oklch(26.5% 0.142 29.2)",
+          "oklch(38% 0.142 29.2)",
+          "oklch(49.5% 0.142 29.2)",
+          "oklch(61% 0.142 29.2)",
+          "oklch(72% 0.142 29.2)",
+          "oklch(83.5% 0.142 29.2)",
+          "oklch(95% 0.142 29.2)"
+        ]
+      },
+      "destructive-dark": {
+        "role": "status",
+        "displayName": "深色主题错误红",
+        "description": "深色错误的文字与图标。",
+        "tonalRamp": [
+          "oklch(15% 0.0923 29)",
+          "oklch(26.5% 0.0923 29)",
+          "oklch(38% 0.0923 29)",
+          "oklch(49.5% 0.0923 29)",
+          "oklch(61% 0.0923 29)",
+          "oklch(72% 0.0923 29)",
+          "oklch(83.5% 0.0923 29)",
+          "oklch(95% 0.0923 29)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "宽屏起始标题",
+        "purpose": "大视口中引导开始选址咨询。"
+      },
+      "headline": {
+        "displayName": "窄屏起始标题",
+        "purpose": "在较窄的阅读列保留起始提示。"
+      },
+      "lead": {
+        "displayName": "宽屏开场说明",
+        "purpose": "交代可以输入的选址信息。"
+      },
+      "title": {
+        "displayName": "会话标题",
+        "purpose": "标识当前会话。"
+      },
+      "body": {
+        "displayName": "助手正文",
+        "purpose": "承载可连续阅读的回复。"
+      },
+      "label": {
+        "displayName": "控件文字",
+        "purpose": "常规操作与会话列表项。"
+      },
+      "caption": {
+        "displayName": "辅助标签",
+        "purpose": "模型标签和消息时间。"
+      }
+    },
+    "motion": [
+      {
+        "name": "control-colors",
+        "value": "150ms cubic-bezier(0.4, 0, 0.2, 1)",
+        "purpose": "切换控件背景、文字和边界的颜色。"
+      },
+      {
+        "name": "assistant-reply-enter",
+        "value": "180ms easeOut",
+        "purpose": "新回复从透明度 0.8 和下移 4px 的位置回到最终状态。减少动态效果时取消。"
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "sm",
+        "value": "40rem"
+      },
+      {
+        "name": "md",
+        "value": "48rem"
+      },
+      {
+        "name": "lg",
+        "value": "64rem"
+      },
+      {
+        "name": "xl",
+        "value": "80rem"
+      },
+      {
+        "name": "2xl",
+        "value": "96rem"
+      },
+      {
+        "name": "short (max-height)",
+        "value": "48rem"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "发送按钮",
+      "kind": "button",
+      "refersTo": "send-button",
+      "description": "在起始输入与会话追问中提交草稿。",
+      "html": "<div class=\"ds-send-example\"><button type=\"button\" class=\"ds-send\"><svg aria-hidden=\"true\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"m5 12 7-7 7 7\"/><path d=\"M12 19V5\"/></svg>发送</button><button type=\"button\" class=\"ds-send\" disabled><svg aria-hidden=\"true\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"m5 12 7-7 7 7\"/><path d=\"M12 19V5\"/></svg>发送</button></div>",
+      "css": ".ds-send-example { display: flex; flex-wrap: wrap; gap: .75rem; } .ds-send { display: inline-flex; align-items: center; justify-content: center; border: 1px solid transparent; border-radius: .5rem; cursor: pointer; white-space: nowrap; outline: none; transition: background-color 150ms cubic-bezier(.4, 0, .2, 1), color 150ms cubic-bezier(.4, 0, .2, 1); height: 2.75rem; gap: .5rem; padding: 0 1rem; font: 500 .875rem/1.25rem var(--font-sans, 'PingFang SC', 'Microsoft YaHei', 'Noto Sans SC', system-ui, sans-serif); background: var(--primary, #1b1b1b); color: var(--primary-foreground, #fbf8f3); } .ds-send:hover:not(:disabled) { background: color-mix(in oklab, var(--primary, #1b1b1b) 80%, transparent); } .ds-send:disabled { cursor: default; color: color-mix(in oklab, var(--primary-foreground, #fbf8f3) 70%, transparent); } .ds-send:focus-visible { border-color: var(--ring, #62574b); box-shadow: 0 0 0 3px color-mix(in oklab, var(--ring, #62574b) 50%, transparent); } .ds-send svg { width: 1.25rem; height: 1.25rem; flex: none; } @media (width >= 48rem) { .ds-send { height: 3.25rem; gap: .75rem; padding: 0 1.5rem; font-size: 1.25rem; line-height: 1.75rem; } }"
+    },
+    {
+      "name": "描边按钮",
+      "kind": "button",
+      "refersTo": "outline-button",
+      "description": "用于聊天历史等次操作，也用来停止生成。",
+      "html": "<div class=\"ds-outline-example\"><button type=\"button\" class=\"ds-outline ds-outline-toolbar\" aria-label=\"聊天历史\" aria-haspopup=\"dialog\"><svg aria-hidden=\"true\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><circle cx=\"12\" cy=\"12\" r=\"10\"/><polyline points=\"12 6 12 12 16.5 12\"/></svg><span class=\"ds-outline-label\">聊天历史</span></button><button type=\"button\" class=\"ds-outline ds-outline-stop\"><svg aria-hidden=\"true\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect width=\"18\" height=\"18\" x=\"3\" y=\"3\" rx=\"2\"/></svg>停止</button></div>",
+      "css": ".ds-outline-example { display: flex; flex-wrap: wrap; gap: .75rem; } .ds-outline { display: inline-flex; align-items: center; justify-content: center; border: 1px solid transparent; border-radius: .5rem; cursor: pointer; white-space: nowrap; outline: none; transition: background-color 150ms cubic-bezier(.4, 0, .2, 1), color 150ms cubic-bezier(.4, 0, .2, 1); border-color: var(--input, #93877c); background: light-dark(var(--background, #fbf8f3), color-mix(in oklab, var(--input, #93877c) 30%, transparent)); color: var(--foreground, #1b1b1b); } .ds-outline:hover:not(:disabled), .ds-outline[aria-expanded=\"true\"] { background: light-dark(var(--muted, #f0ece5), color-mix(in oklab, var(--input, #93877c) 50%, transparent)); } .ds-outline:disabled { cursor: default; opacity: .5; } .ds-outline:focus-visible { border-color: var(--ring, #62574b); box-shadow: 0 0 0 3px color-mix(in oklab, var(--ring, #62574b) 50%, transparent); } .ds-outline svg { width: 1.25rem; height: 1.25rem; flex: none; } .ds-outline-toolbar { width: 2.75rem; height: 2.75rem; gap: .5rem; padding: 0; font: 500 .875rem/1.25rem var(--font-sans, 'PingFang SC', 'Microsoft YaHei', 'Noto Sans SC', system-ui, sans-serif); } .ds-outline-label { display: none; } .ds-outline-stop { height: 2.75rem; gap: .5rem; padding: 0 1rem; font: 500 .875rem/1.25rem var(--font-sans, 'PingFang SC', 'Microsoft YaHei', 'Noto Sans SC', system-ui, sans-serif); } @media (width >= 40rem) { .ds-outline-toolbar { width: auto; padding: 0 1rem; } .ds-outline-label { display: inline; } } @media (width >= 48rem) { .ds-outline-toolbar { height: 3.25rem; min-width: 10rem; gap: .75rem; padding: 0 1.25rem; font-size: 1.125rem; line-height: 1.75rem; } .ds-outline-stop { height: 3.25rem; gap: .75rem; padding: 0 1.5rem; font-size: 1.25rem; line-height: 1.75rem; } } @media (width >= 80rem) { .ds-outline-toolbar { font-size: 1.25rem; } }"
+    },
+    {
+      "name": "无边框图标按钮",
+      "kind": "button",
+      "refersTo": "ghost-button",
+      "description": "用于关闭聊天历史或切换主题。",
+      "html": "<button type=\"button\" class=\"ds-icon-action\" aria-label=\"关闭聊天历史\"><svg aria-hidden=\"true\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"m18 6-12 12M6 6l12 12\"/></svg></button>",
+      "css": ".ds-icon-action { display: inline-flex; align-items: center; justify-content: center; border: 1px solid transparent; border-radius: .5rem; cursor: pointer; white-space: nowrap; outline: none; transition: background-color 150ms cubic-bezier(.4, 0, .2, 1), color 150ms cubic-bezier(.4, 0, .2, 1); width: 2.75rem; height: 2.75rem; padding: 0; background: transparent; color: var(--foreground, #1b1b1b); } .ds-icon-action:hover:not(:disabled) { background: light-dark(var(--muted, #f0ece5), color-mix(in oklab, var(--muted, #f0ece5) 50%, transparent)); } .ds-icon-action:focus-visible { border-color: var(--ring, #62574b); box-shadow: 0 0 0 3px color-mix(in oklab, var(--ring, #62574b) 50%, transparent); } .ds-icon-action svg { width: 1rem; height: 1rem; flex: none; }"
+    },
+    {
+      "name": "咨询输入框",
+      "kind": "input",
+      "refersTo": "composer",
+      "description": "多行输入、发送和键盘提示共用单一边界。",
+      "html": "<div class=\"ds-composer\" role=\"group\" aria-label=\"发送消息\"><textarea class=\"ds-composer-input\" rows=\"2\" aria-label=\"消息\" aria-describedby=\"ds-composer-hint\" placeholder=\"输入选址问题或已有资料…\"></textarea><div class=\"ds-composer-actions\"><span class=\"ds-composer-hint\" id=\"ds-composer-hint\">Enter 发送 · Shift + Enter 换行</span><button type=\"button\" class=\"ds-composer-send\"><svg aria-hidden=\"true\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"m5 12 7-7 7 7\"/><path d=\"M12 19V5\"/></svg>发送</button></div></div>",
+      "css": ":host { display: block; width: 100%; } .ds-composer { border: 1px solid var(--input, #93877c); border-radius: 1rem; background: var(--card, #ffffff); color: var(--foreground, #1b1b1b); transition: background-color 150ms cubic-bezier(.4, 0, .2, 1), color 150ms cubic-bezier(.4, 0, .2, 1); } .ds-composer:has(.ds-composer-input:disabled) { background: var(--muted, #f0ece5); } .ds-composer:has(.ds-composer-input:focus-visible) { border-color: var(--ring, #62574b); box-shadow: 0 0 0 3px color-mix(in oklab, var(--ring, #62574b) 50%, transparent); } .ds-composer:has(.ds-composer-input[aria-invalid=\"true\"]) { border-color: var(--destructive, #962d23); box-shadow: 0 0 0 3px light-dark(color-mix(in oklab, var(--destructive, #962d23) 20%, transparent), color-mix(in oklab, var(--destructive, #962d23) 40%, transparent)); } .ds-composer-input { display: block; box-sizing: border-box; width: 100%; field-sizing: content; min-height: 7rem; max-height: 15rem; overflow-y: auto; resize: none; border: 0; outline: none; padding: 1rem 1rem .5rem; background: transparent; color: inherit; font: 400 1rem/1.5 var(--font-sans, 'PingFang SC', 'Microsoft YaHei', 'Noto Sans SC', system-ui, sans-serif); } .ds-composer-input::placeholder { color: var(--muted-foreground, #5a5650); } .ds-composer-input:disabled { opacity: .5; cursor: not-allowed; } .ds-composer-actions { display: flex; align-items: center; justify-content: flex-end; gap: .5rem; padding: .375rem .75rem .75rem; } .ds-composer-hint { display: none; padding-left: .5rem; color: var(--muted-foreground, #5a5650); font: 400 .875rem/1.25rem var(--font-sans, 'PingFang SC', 'Microsoft YaHei', 'Noto Sans SC', system-ui, sans-serif); } @media (width >= 40rem) { .ds-composer-input { padding: 1.25rem 1.5rem .5rem; } .ds-composer-actions { justify-content: space-between; padding: .375rem 1rem 1rem; } .ds-composer-hint { display: block; } } @media (width >= 64rem) { .ds-composer-input { min-height: 11.125rem; font-size: 1.5rem; line-height: 2rem; letter-spacing: .025em; } .ds-composer-hint { font-size: 1.125rem; line-height: 1.75rem; } } @media (width >= 64rem) and (height <= 48rem) { .ds-composer-input { min-height: 9rem; } } .ds-composer-send { display: inline-flex; align-items: center; justify-content: center; border: 1px solid transparent; border-radius: .5rem; cursor: pointer; white-space: nowrap; outline: none; transition: background-color 150ms cubic-bezier(.4, 0, .2, 1), color 150ms cubic-bezier(.4, 0, .2, 1); height: 2.75rem; gap: .5rem; padding: 0 1rem; font: 500 .875rem/1.25rem var(--font-sans, 'PingFang SC', 'Microsoft YaHei', 'Noto Sans SC', system-ui, sans-serif); background: var(--primary, #1b1b1b); color: var(--primary-foreground, #fbf8f3); } .ds-composer-send:hover:not(:disabled) { background: color-mix(in oklab, var(--primary, #1b1b1b) 80%, transparent); } .ds-composer-send:disabled { cursor: default; color: color-mix(in oklab, var(--primary-foreground, #fbf8f3) 70%, transparent); } .ds-composer-send:focus-visible { border-color: var(--ring, #62574b); box-shadow: 0 0 0 3px color-mix(in oklab, var(--ring, #62574b) 50%, transparent); } .ds-composer-send svg { width: 1.25rem; height: 1.25rem; flex: none; } @media (width >= 48rem) { .ds-composer-send { height: 3.25rem; gap: .75rem; padding: 0 1.5rem; font-size: 1.25rem; line-height: 1.75rem; } }"
+    },
+    {
+      "name": "常用问题组",
+      "kind": "custom",
+      "refersTo": "starter-prompts",
+      "description": "选择一项后，把问题填入可编辑草稿并聚焦输入区。",
+      "html": "<ul class=\"ds-prompts\"><li><button type=\"button\" class=\"ds-prompt\"><svg aria-hidden=\"true\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z\"/><path d=\"M14 2v4a2 2 0 0 0 2 2h4M10 9H8m8 4H8m8 4H8\"/></svg>梳理选址输入</button></li><li><button type=\"button\" class=\"ds-prompt\"><svg aria-hidden=\"true\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"m3 17 2 2 4-4M3 7l2 2 4-4m4 1h8m-8 6h8m-8 6h8\"/></svg>准备资料清单</button></li><li><button type=\"button\" class=\"ds-prompt\"><svg aria-hidden=\"true\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><circle cx=\"12\" cy=\"12\" r=\"10\"/><polyline points=\"12 6 12 12 16.5 12\"/></svg>读取当前时间</button></li></ul>",
+      "css": ":host { display: block; width: 100%; container-type: inline-size; } .ds-prompts { display: grid; margin: 0; padding: 0; overflow: hidden; list-style: none; border: 1px solid var(--input, #93877c); border-radius: 1rem; } .ds-prompts li + li { border-top: 1px solid var(--border, #d3cbc0); } .ds-prompt { display: inline-flex; align-items: center; justify-content: center; border: 1px solid transparent; border-radius: .5rem; cursor: pointer; white-space: nowrap; outline: none; transition: background-color 150ms cubic-bezier(.4, 0, .2, 1), color 150ms cubic-bezier(.4, 0, .2, 1); width: 100%; height: 100%; min-height: 3.5rem; justify-content: flex-start; padding: 0 1rem; border-radius: 0; gap: .75rem; color: var(--foreground, #1b1b1b); background: transparent; font: 500 1rem/1.5 var(--font-sans, 'PingFang SC', 'Microsoft YaHei', 'Noto Sans SC', system-ui, sans-serif); } .ds-prompt:hover:not(:disabled) { background: light-dark(var(--muted, #f0ece5), color-mix(in oklab, var(--muted, #f0ece5) 50%, transparent)); } .ds-prompt:disabled { opacity: .5; cursor: default; } .ds-prompt:focus-visible { border-color: var(--ring, #62574b); box-shadow: inset 0 0 0 3px color-mix(in oklab, var(--ring, #62574b) 50%, transparent); } .ds-prompt svg { width: 1.5rem; height: 1.5rem; flex: none; } @container (width >= 40rem) { .ds-prompts { grid-template-columns: repeat(3, minmax(0, 1fr)); } .ds-prompts li + li { border-top: 0; border-left: 1px solid var(--border, #d3cbc0); } .ds-prompt { justify-content: center; } } @media (width >= 48rem) { .ds-prompt { min-height: 5.25rem; } } @media (width >= 64rem) { .ds-prompt { gap: 1.25rem; font-size: 1.5rem; line-height: 2rem; } }"
+    },
+    {
+      "name": "会话列表",
+      "kind": "nav",
+      "refersTo": "history-row-selected",
+      "description": "历史面板按会话标题与更新时间排列，当前项使用辅助底色。",
+      "html": "<nav class=\"ds-history\" aria-label=\"会话列表\"><button type=\"button\" class=\"ds-history-row\" aria-current=\"page\" title=\"陆上风电选址输入\"><svg aria-hidden=\"true\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z\"/></svg><span class=\"ds-history-title\">陆上风电选址输入</span><time class=\"ds-history-date\" datetime=\"2026-11-20\">11月20日</time></button><button type=\"button\" class=\"ds-history-row\" title=\"光伏初筛资料清单\"><svg aria-hidden=\"true\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z\"/></svg><span class=\"ds-history-title\">光伏初筛资料清单</span><time class=\"ds-history-date\" datetime=\"2026-11-19\">11月19日</time></button></nav>",
+      "css": ":host { display: block; width: 100%; } .ds-history { display: flex; flex-direction: column; gap: .25rem; } .ds-history-row { display: inline-flex; align-items: center; justify-content: center; border: 1px solid transparent; border-radius: .5rem; cursor: pointer; white-space: nowrap; outline: none; transition: background-color 150ms cubic-bezier(.4, 0, .2, 1), color 150ms cubic-bezier(.4, 0, .2, 1); width: 100%; min-width: 0; min-height: 2.75rem; gap: .75rem; padding: .5rem .75rem; justify-content: flex-start; color: var(--foreground, #1b1b1b); background: transparent; text-align: left; font: 500 .875rem/1.25rem var(--font-sans, 'PingFang SC', 'Microsoft YaHei', 'Noto Sans SC', system-ui, sans-serif); } .ds-history-row:hover:not(:disabled) { background: light-dark(var(--muted, #f0ece5), color-mix(in oklab, var(--muted, #f0ece5) 50%, transparent)); } .ds-history-row[aria-current=\"page\"] { background: var(--secondary, #eee9e1); } .ds-history-row[aria-current=\"page\"]:hover:not(:disabled) { background: color-mix(in oklch, var(--secondary, #eee9e1), var(--foreground, #1b1b1b) 5%); } .ds-history-row:disabled { cursor: default; opacity: .5; } .ds-history-row:focus-visible { border-color: var(--ring, #62574b); box-shadow: 0 0 0 3px color-mix(in oklab, var(--ring, #62574b) 50%, transparent); } .ds-history-row svg { width: 1rem; height: 1rem; flex: none; } .ds-history-title { flex: 1; min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; } .ds-history-date { flex: none; color: var(--muted-foreground, #5a5650); font-size: .75rem; line-height: 1rem; font-variant-numeric: tabular-nums; }"
+    },
+    {
+      "name": "模型标签",
+      "kind": "chip",
+      "refersTo": "model-badge",
+      "description": "在会话标题栏标出已配置的模型。",
+      "html": "<span class=\"ds-model\"><span class=\"ds-model-dot\" aria-hidden=\"true\"></span><span class=\"ds-model-name\" title=\"qwen-plus\">qwen-plus</span></span>",
+      "css": ".ds-model { display: inline-flex; box-sizing: border-box; max-width: 8rem; height: 1.25rem; align-items: center; gap: .375rem; padding: .125rem .5rem; overflow: hidden; border: 1px solid transparent; border-radius: 2rem; background: var(--secondary, #eee9e1); color: var(--foreground, #1b1b1b); font: 500 .75rem/1rem var(--font-sans, 'PingFang SC', 'Microsoft YaHei', 'Noto Sans SC', system-ui, sans-serif); } .ds-model-dot { width: .375rem; height: .375rem; flex: none; border-radius: 100%; background: var(--brand-marker, #3964fe); } .ds-model-name { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; } @media (width >= 40rem) { .ds-model { max-width: 12rem; } }"
+    },
+    {
+      "name": "用户消息气泡",
+      "kind": "card",
+      "refersTo": "user-bubble",
+      "description": "右对齐的暖灰表面承载用户输入。",
+      "html": "<div class=\"ds-user-message\"><div class=\"ds-user-meta\"><span>你</span><time datetime=\"2026-11-20T14:30:00+08:00\">14:30</time></div><div class=\"ds-user-bubble\">集中式地面光伏初筛前，应准备哪些图层和资料？</div></div>",
+      "css": ":host { display: block; width: 100%; } .ds-user-message { display: flex; flex-direction: column; align-items: flex-end; gap: .625rem; } .ds-user-meta { display: flex; gap: .5rem; padding: 0 .75rem; color: var(--muted-foreground, #5a5650); font: 500 .75rem/1rem var(--font-sans, 'PingFang SC', 'Microsoft YaHei', 'Noto Sans SC', system-ui, sans-serif); font-variant-numeric: tabular-nums; } .ds-user-bubble { box-sizing: border-box; max-width: 80%; padding: .75rem 1rem; border: 1px solid transparent; border-radius: .75rem; color: var(--foreground, #1b1b1b); background: var(--secondary, #eee9e1); font: 400 1rem/1.625 var(--font-sans, 'PingFang SC', 'Microsoft YaHei', 'Noto Sans SC', system-ui, sans-serif); overflow-wrap: anywhere; white-space: pre-wrap; }"
+    },
+    {
+      "name": "工具活动",
+      "kind": "custom",
+      "refersTo": "tool-trace",
+      "description": "在助手回复中用图标与文字标出执行中、已完成和失败。",
+      "html": "<div class=\"ds-trace\"><div class=\"ds-trace-row\"><svg aria-hidden=\"true\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><circle cx=\"12\" cy=\"12\" r=\"10\"/><polyline points=\"12 6 12 12 16.5 12\"/></svg><span>读取当前时间</span><span>执行中</span></div><div class=\"ds-trace-row\"><svg aria-hidden=\"true\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M20 6 9 17l-5-5\"/></svg><span>读取当前时间</span><span>已完成</span></div><div class=\"ds-trace-row ds-trace-error\"><svg aria-hidden=\"true\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><circle cx=\"12\" cy=\"12\" r=\"10\"/><path d=\"M12 8v4m0 4h.01\"/></svg><span>读取当前时间</span><span>执行失败</span></div></div>",
+      "css": ".ds-trace { display: flex; flex-direction: column; gap: .5rem; padding-left: .75rem; border-left: 1px solid var(--border, #d3cbc0); color: var(--muted-foreground, #5a5650); font: 400 .875rem/1.25rem var(--font-sans, 'PingFang SC', 'Microsoft YaHei', 'Noto Sans SC', system-ui, sans-serif); } .ds-trace-row { display: flex; align-items: center; flex-wrap: wrap; gap: .5rem; } .ds-trace-error { color: var(--destructive, #962d23); } .ds-trace-row svg { width: 1rem; height: 1rem; flex: none; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "选址登记页",
+    "overview": "把选址咨询做成一张容易填写、便于回读的登记页。标题交代要填写的信息，输入框承载主要操作。进入会话后，助手回复沿阅读列展开，输入框接续追问。\n\n暖奶白工作面、墨黑文字、系统中文无衬线和细边界形成安静的工作环境。浅色用官方主字标，深色用官方反白字标。消息头像和 favicon 使用墨黑底应用图标。",
+    "keyCharacteristics": [
+      "单列阅读与输入，常用问题贴近输入区。",
+      "填写区域以独立表面和一圈细边界识别。",
+      "亮蓝留在官方字标和小面积标记。"
+    ],
+    "dos": [
+      "**Do** 在浅深主题中分别使用官方主字标和反白字标。",
+      "**Do** 把输入、发送和可用的键盘提示放在同一块输入表面。",
+      "**Do** 让焦点、失败和当前会话各自有清晰可辨的状态。"
+    ],
+    "donts": [
+      "**Don't** 把标识用蓝扩展成正文色或大面积的操作底色。",
+      "**Don't** 给每条助手消息加卡片边框或装饰阴影。"
+    ]
+  }
+}

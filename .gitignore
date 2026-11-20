@@ -22,6 +22,7 @@ output/
 **/.impeccable/hook.pending.json
 **/.impeccable/*.png
 **/.impeccable/review/
+**/.impeccable/build/
 **/.impeccable/questions/
 **/.impeccable/live/server.json
 **/.impeccable/live/sessions/

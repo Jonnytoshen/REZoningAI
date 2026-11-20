@@ -21,6 +21,12 @@ export const createSession = (signal: AbortSignal) =>
   });
 export const getSession = (id: string, signal?: AbortSignal) =>
   request<ChatSession>(`/sessions/${encodeURIComponent(id)}`, { signal });
+export const renameSession = (id: string, title: string) =>
+  request<SessionSummary>(`/sessions/${encodeURIComponent(id)}`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ title }),
+  });
 
 export async function streamTurn(
   sessionId: string,
