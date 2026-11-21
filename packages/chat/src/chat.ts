@@ -7,6 +7,7 @@ export interface SessionSummary {
   id: string;
   title: string;
   updatedAt: string;
+  latestInput: string | null;
 }
 
 export interface ToolRun {
@@ -37,6 +38,7 @@ export type ChatEvent =
   | { type: 'finish'; turn: Turn };
 
 export const MAX_MESSAGE_LENGTH = 8_000;
+export const MAX_SESSION_TITLE_LENGTH = 80;
 
 export function updateToolRun(tools: ToolRun[], event: ToolRun): ToolRun[] {
   const existing = tools.some((tool) => tool.id === event.id);

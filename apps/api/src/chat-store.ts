@@ -7,6 +7,14 @@ import type { OnApplicationShutdown } from '@nestjs/common';
 import type { ModelMessage } from 'ai';
 import type { ChatSession, SessionSummary, ToolRun, Turn } from '@rezoning-ai/chat';
 
+const defaultTitle = '新会话';
+const latestInputLength = 160;
+const summaryColumns = `
+  id, title, updated_at AS updatedAt,
+  (SELECT substr(input, 1, ${latestInputLength}) FROM turns
+   WHERE session_id = sessions.id ORDER BY rowid DESC LIMIT 1) AS latestInput
+`;
+
 interface TurnRow extends Omit<Turn, 'tools' | 'error'> {
   tools: string;
   error: string | null;
@@ -75,7 +83,7 @@ export class ChatStore implements OnApplicationShutdown {
     return this.db
       .prepare(
         `
-      SELECT id, title, updated_at AS updatedAt
+      SELECT ${summaryColumns}
       FROM sessions ORDER BY updated_at DESC, rowid DESC
     `,
       )
@@ -83,11 +91,23 @@ export class ChatStore implements OnApplicationShutdown {
   }
 
   createSession(): SessionSummary {
-    const session = { id: randomUUID(), title: '新会话', updatedAt: new Date().toISOString() };
+    const session: SessionSummary = {
+      id: randomUUID(),
+      title: defaultTitle,
+      updatedAt: new Date().toISOString(),
+      latestInput: null,
+    };
     this.db
       .prepare('INSERT INTO sessions VALUES (?, ?, ?)')
       .run(session.id, session.title, session.updatedAt);
     return session;
+  }
+
+  renameSession(id: string, title: string): SessionSummary {
+    return this.transaction(() => {
+      this.db.prepare('UPDATE sessions SET title = ? WHERE id = ?').run(title, id);
+      return this.sessionSummary(id);
+    });
   }
 
   getSession(id: string): ChatSession {
@@ -131,13 +151,11 @@ export class ChatStore implements OnApplicationShutdown {
         tools: [],
         status: 'running',
       };
-      const first = !this.db
-        .prepare('SELECT 1 FROM turns WHERE session_id = ? LIMIT 1')
-        .get(sessionId);
-      if (first) {
+      if (session.latestInput === null && session.title === defaultTitle) {
         const text = Array.from(input.replace(/\s+/g, ' '));
         session.title = text.slice(0, 28).join('') + (text.length > 28 ? '…' : '');
       }
+      session.latestInput = Array.from(input).slice(0, latestInputLength).join('');
       session.updatedAt = createdAt;
       this.db
         .prepare(
@@ -218,7 +236,7 @@ export class ChatStore implements OnApplicationShutdown {
     const session = this.db
       .prepare(
         `
-      SELECT id, title, updated_at AS updatedAt FROM sessions WHERE id = ?
+      SELECT ${summaryColumns} FROM sessions WHERE id = ?
     `,
       )
       .get(id) as SessionSummary | undefined;

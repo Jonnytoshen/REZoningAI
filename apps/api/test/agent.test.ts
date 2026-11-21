@@ -239,6 +239,21 @@ describe('chat session API and recovery', { concurrent: false, shuffle: false },
 
   test('SQLite retains both sessions and recovers an unfinished turn after restart', async () => {
     assert.ok(app);
+    const beforeRename = await get(second.id);
+    const rename = (id: string, title: string) =>
+      call(`/sessions/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title }),
+      });
+    assert.equal((await rename(second.id, '  ')).status, 400);
+    assert.equal((await rename(randomUUID(), '不存在')).status, 404);
+    const renamed = await rename(second.id, ' 容县地面光伏 ');
+    assert.equal(renamed.status, 200);
+    const summary = (await renamed.json()) as SessionSummary;
+    assert.equal(summary.title, '容县地面光伏');
+    assert.equal(summary.updatedAt, beforeRename.updatedAt);
+    assert.equal(summary.latestInput, '准备研究地面光伏。');
     const running = app.get(ChatStore).begin(second.id, '重启前的消息');
     const shutdownResponse = await send(first.id, '关闭时仍在生成');
     const [shutdownEvents] = await Promise.all([readEvents(shutdownResponse), stop()]);
@@ -253,6 +268,10 @@ describe('chat session API and recovery', { concurrent: false, shuffle: false },
     assert.equal(secondSession.turns[0].input, '准备研究地面光伏。');
     assert.equal(secondSession.turns.at(-1)?.id, running.turn.id);
     assert.equal(secondSession.turns.at(-1)?.status, 'interrupted');
+    const history = (await (await call('/sessions')).json()) as SessionSummary[];
+    const recovered = history.find(({ id }) => id === second.id);
+    assert.equal(recovered?.title, '容县地面光伏');
+    assert.equal(recovered?.latestInput, '重启前的消息');
     await readEvents(await send(first.id, '继续交流'));
     assert.ok(
       requests

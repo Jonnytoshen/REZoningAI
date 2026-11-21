@@ -1,7 +1,15 @@
 import { useEffect, useRef, useState } from 'react';
 import { updateToolRun } from '@rezoning-ai/chat';
 import type { ChatEvent, ChatSession, ModelConfig, SessionSummary, Turn } from '@rezoning-ai/chat';
-import { createSession, getConfig, getSession, listSessions, streamTurn } from './api.js';
+import {
+  createSession,
+  getConfig,
+  getSession,
+  listSessions,
+  renameSession,
+  streamTurn,
+} from './api.js';
+import { newDraftKey, useChatDrafts } from './use-chat-drafts.js';
 
 function showSessionInURL(id?: string) {
   const url = new URL(window.location.href);
@@ -27,17 +35,18 @@ export function useChat() {
   const [config, setConfig] = useState<ModelConfig | null>(null);
   const [sessions, setSessions] = useState<SessionSummary[]>([]);
   const [session, setSession] = useState<ChatSession | null>(null);
-  const [draft, setDraft] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
   const [opening, setOpening] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [stopping, setStopping] = useState(false);
   const request = useRef<AbortController | null>(null);
-  const pendingInput = useRef<{ sessionId: string; input: string; turnId: string } | null>(null);
+  const { drafts, setText, moveNewDraft, prepare, accept, reconcile } = useChatDrafts();
   const last = session?.turns.at(-1);
   const waitingForServer = last?.status === 'running' && !submitting;
   const sessionId = session?.id;
+  const draftKey = sessionId ?? newDraftKey;
+  const draft = drafts[draftKey]?.text ?? '';
 
   useEffect(() => {
     let active = true;
@@ -50,7 +59,10 @@ export function useChat() {
         const id = new URL(window.location.href).searchParams.get('session');
         if (id && history.some((item) => item.id === id)) {
           const selected = await getSession(id);
-          if (active) setSession(selected);
+          if (active) {
+            reconcile(selected);
+            setSession(selected);
+          }
         } else if (id) {
           showSessionInURL();
         }
@@ -64,7 +76,7 @@ export function useChat() {
     return () => {
       active = false;
     };
-  }, []);
+  }, [reconcile]);
 
   useEffect(() => {
     if (!waitingForServer || !sessionId) return;
@@ -73,7 +85,10 @@ export function useChat() {
     async function refresh(id: string) {
       try {
         const updated = await getSession(id);
-        if (active) setSession(updated);
+        if (active) {
+          reconcile(updated);
+          setSession(updated);
+        }
         if (updated.turns.at(-1)?.status !== 'running') return;
       } catch {
         // A temporary network error can clear before the next poll.
@@ -85,7 +100,7 @@ export function useChat() {
       active = false;
       window.clearTimeout(timer);
     };
-  }, [sessionId, waitingForServer]);
+  }, [reconcile, sessionId, waitingForServer]);
 
   const changeBlocked = loading || opening || submitting;
 
@@ -94,8 +109,9 @@ export function useChat() {
     setOpening(true);
     setError('');
     try {
-      setSession(await getSession(id));
-      setDraft('');
+      const selected = await getSession(id);
+      reconcile(selected);
+      setSession(selected);
       showSessionInURL(id);
     } catch (problem) {
       setError(errorMessage(problem));
@@ -107,14 +123,27 @@ export function useChat() {
   function startNew() {
     if (changeBlocked) return;
     setSession(null);
-    setDraft('');
     setError('');
-    pendingInput.current = null;
     showSessionInURL();
   }
 
   function remember(summary: SessionSummary) {
     setSessions((items) => [summary, ...items.filter((item) => item.id !== summary.id)]);
+  }
+
+  async function rename(title: string) {
+    if (!sessionId) return;
+    try {
+      const renamed = await renameSession(sessionId, title);
+      setSessions((items) =>
+        items.map((item) => (item.id === sessionId ? { ...item, title: renamed.title } : item)),
+      );
+      setSession((current) =>
+        current?.id === sessionId ? { ...current, title: renamed.title } : current,
+      );
+    } catch (problem) {
+      throw new Error(errorMessage(problem));
+    }
   }
 
   async function submit(action: { input: string } | { retryId: string }) {
@@ -123,36 +152,24 @@ export function useChat() {
     request.current = controller;
     setSubmitting(true);
     setError('');
-    if ('input' in action) setDraft('');
     let current = session;
-    let accepted = false;
-    let turnId: string | undefined;
     try {
       if (!current) {
         const summary = await createSession(controller.signal);
         current = { ...summary, turns: [] };
+        moveNewDraft(summary.id);
         remember(summary);
         setSession(current);
         showSessionInURL(summary.id);
       }
       const id = current.id;
-      const pending = pendingInput.current;
       const streamAction =
-        'input' in action
-          ? {
-              ...action,
-              turnId:
-                pending?.sessionId === id && pending.input === action.input
-                  ? pending.turnId
-                  : crypto.randomUUID(),
-            }
-          : action;
-      if ('turnId' in streamAction) pendingInput.current = { sessionId: id, ...streamAction };
-      turnId = 'turnId' in streamAction ? streamAction.turnId : streamAction.retryId;
+        'input' in action ? { ...action, turnId: prepare(id, action.input) } : action;
+      let turnId = 'turnId' in streamAction ? streamAction.turnId : streamAction.retryId;
       await streamTurn(id, streamAction, controller.signal, (event: ChatEvent) => {
         if (event.type === 'start') {
-          accepted = true;
           turnId = event.turn.id;
+          accept(id, turnId);
           remember(event.session);
         }
         setSession((value) => {
@@ -179,17 +196,15 @@ export function useChat() {
       if (current) {
         try {
           const updated = await getSession(current.id, AbortSignal.timeout(2_500));
-          accepted ||= updated.turns.some((item) => item.id === turnId);
+          reconcile(updated);
           setSession(updated);
           remember(updated);
         } catch {
           // Keep the message visible while the connection is unavailable.
         }
       }
-      if ('input' in action && !accepted) setDraft(action.input);
       if (!controller.signal.aborted) setError(errorMessage(problem));
     } finally {
-      if (accepted) pendingInput.current = null;
       request.current = null;
       setSubmitting(false);
       setStopping(false);
@@ -213,9 +228,10 @@ export function useChat() {
     stopping,
     waitingForServer,
     changeBlocked,
-    setDraft,
+    setDraft: (value: string) => setText(draftKey, value),
     open,
     startNew,
+    rename,
     submit,
     stop,
   };

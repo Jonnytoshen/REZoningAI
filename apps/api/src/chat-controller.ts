@@ -5,6 +5,7 @@ import {
   Get,
   Inject,
   Param,
+  Patch,
   Post,
   Res,
   ServiceUnavailableException,
@@ -13,7 +14,7 @@ import type { BeforeApplicationShutdown } from '@nestjs/common';
 import type { ModelMessage } from 'ai';
 import type { Response } from 'express';
 import { z } from 'zod';
-import { MAX_MESSAGE_LENGTH, updateToolRun } from '@rezoning-ai/chat';
+import { MAX_MESSAGE_LENGTH, MAX_SESSION_TITLE_LENGTH, updateToolRun } from '@rezoning-ai/chat';
 import type { ChatEvent, ModelConfig } from '@rezoning-ai/chat';
 import { ChatStore } from './chat-store.js';
 import type { TurnReceipt } from './chat-store.js';
@@ -23,6 +24,10 @@ import { QwenAgent } from './qwen-agent.js';
 const newMessage = z.object({
   input: z.string().trim().min(1).max(MAX_MESSAGE_LENGTH),
   turnId: z.uuid(),
+});
+
+const sessionTitle = z.object({
+  title: z.string().trim().min(1).max(MAX_SESSION_TITLE_LENGTH),
 });
 
 @Controller('api')
@@ -57,6 +62,15 @@ export class ChatController implements BeforeApplicationShutdown {
   @Get('sessions/:sessionId')
   getSession(@Param('sessionId') sessionId: string) {
     return this.store.getSession(sessionId);
+  }
+
+  @Patch('sessions/:sessionId')
+  renameSession(@Param('sessionId') sessionId: string, @Body() body: unknown) {
+    const parsed = sessionTitle.safeParse(body);
+    if (!parsed.success) {
+      throw new BadRequestException(`会话名称须为 1 至 ${MAX_SESSION_TITLE_LENGTH} 个字符。`);
+    }
+    return this.store.renameSession(sessionId, parsed.data.title);
   }
 
   @Post('sessions/:sessionId/turns')
